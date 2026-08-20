@@ -46,6 +46,34 @@
         "Move 2 other items to 'today' slot, everything else to 'this week'",
         "Close all other tabs and documents; only keep open what you need for the first frog"
       ]
+    },
+    {
+      "id": "cog-stress-priority-01",
+      "title": "Overwhelm Triage: Star & Circle Method",
+      "durationMinutes": 8,
+      "type": "decision",
+      "instructions": [
+        "Write down everything that currently feels stressful or overwhelming, one item per line",
+        "Place a star next to items with a real deadline within the next 24 hours",
+        "Place a circle next to items that are truly within your control right now",
+        "For starred+circled items, write ONE tiny next action you can take in the next 2 hours",
+        "For items you circled without a star, schedule one 15-minute slot later this week",
+        "For items you cannot control, cross them off: I release what I cannot change right now"
+      ]
+    },
+    {
+      "id": "cog-pomodoro-01",
+      "title": "25-Minute Focus Sprint",
+      "durationMinutes": 25,
+      "type": "focus-timer",
+      "instructions": [
+        "Choose ONE single task before starting the timer",
+        "Remove all notifications: phone on silent, extra tabs closed",
+        "Set a timer for 25 minutes",
+        "If off-topic thoughts arise, write them quickly on a scratch note — do not act on them yet",
+        "When the timer ends, write exactly where you stopped so re-entry is instant",
+        "Take a 5-minute walk or stretch break before deciding to do another sprint"
+      ]
     }
   ],
   "tools": [
@@ -78,12 +106,18 @@
       "name": "Working Memory Support Kit",
       "description": "Checklists, templates, and mnemonic tools to reduce reliance on raw working memory.",
       "type": "memory-support"
+    },
+    {
+      "id": "tool-cog-breath",
+      "name": "Breath Rhythm Guide",
+      "description": "Animated visual guide for multiple breathing patterns with adjustable pace — a quick mental reset.",
+      "type": "breathing-timer"
     }
   ],
-  "recommendedSounds": [
-    "White noise",
-    "Lo-fi instrumental",
-    "Baroque music"
-  ],
+  "recommendedSoundIds": ["white-noise", "brown-noise", "rain", "river"],
+  "timerConfig": {
+    "defaultDurationMinutes": 25,
+    "options": [15, 25, 45, 60]
+  },
   "safetyGuidance": "Cognitive overload is your brain telling you it has reached capacity — it is not a personal failure, it is a system signal. Chronic overload can worsen over time, so if you regularly feel mentally saturated, examine your workload boundaries and consider discussing capacity with your manager, team, or loved ones. Your brain has limits, and respecting them makes you more effective in the long run, not less."
 }

@@ -1,6 +1,6 @@
 {
-  "conditionId": "depression",
-  "name": "Depression",
+  "conditionId": "depressive-symptoms",
+  "name": "Depressive Symptoms",
   "description": "Persistent feelings of sadness, hopelessness, or loss of interest in activities that can affect thinking, behavior, and physical well-being.",
   "immediateActions": [
     {
@@ -58,6 +58,20 @@
         "Place your hand on your heart or give yourself a gentle hug",
         "Take a moment to accept the compassion you just offered"
       ]
+    },
+    {
+      "id": "dep-move-01",
+      "title": "5-Minute Gentle Movement",
+      "durationMinutes": 5,
+      "type": "movement",
+      "instructions": [
+        "Stand with your feet shoulder-width apart if able — lying down stretches are fine too",
+        "March gently in place or wiggle your feet for 60 seconds",
+        "Roll your shoulders backward 5 times, then forward 5 times",
+        "Reach one arm overhead and lean gently to the opposite side, hold 3 breaths, repeat other side",
+        "Finish with 30 seconds of slow, deep breathing with eyes closed",
+        "Rate your energy level before and after — even a 0.5 shift matters"
+      ]
     }
   ],
   "tools": [
@@ -92,10 +106,10 @@
       "type": "resource-library"
     }
   ],
-  "recommendedSounds": [
-    "Piano",
-    "Rain",
-    "Forest"
-  ],
+  "recommendedSoundIds": ["rain", "forest", "ambient", "singing-bowl"],
+  "timerConfig": {
+    "defaultDurationMinutes": 8,
+    "options": [3, 5, 8, 10]
+  },
   "safetyGuidance": "Depression is a real health condition, not a personal failure, and recovery is absolutely possible with the right support. If you are experiencing persistent low mood, please reach out to a mental health professional or your doctor. If you have thoughts of harming yourself, please contact your local crisis line or emergency services right away. You deserve care and there is help available."
 }

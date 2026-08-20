@@ -43,6 +43,35 @@
         "If comfortable, make one tiny friendly gesture: smile, hold a door, say thank you to someone",
         "Leave whenever you want — there is no minimum except showing up"
       ]
+    },
+    {
+      "id": "sd-54321-01",
+      "title": "5-4-3-2-1 Social Grounding",
+      "durationMinutes": 4,
+      "type": "grounding",
+      "instructions": [
+        "While in an anxious or disconnected moment, do this silently to come back to present",
+        "Name 5 things you can SEE in the space around you",
+        "Name 4 things you can physically TOUCH (clothes on skin, feet on floor, chair under you)",
+        "Name 3 things you can HEAR right now",
+        "Name 2 things you can SMELL (even if just your shampoo or room air)",
+        "Name 1 thing you can TASTE",
+        "Remind yourself: I am safe. My body is having a feeling. This feeling will pass. I have gotten through this before."
+      ]
+    },
+    {
+      "id": "sd-postsocial-01",
+      "title": "Post-Social Recovery Ritual",
+      "durationMinutes": 10,
+      "type": "reflection",
+      "instructions": [
+        "After a social interaction that drained you, give yourself explicit permission to decompress",
+        "Find a quiet, comfortable place and sit without screens for 5 minutes",
+        "Notice where in your body you are holding tension — jaw, shoulders, chest — and breathe into each area",
+        "Write one sentence about what went okay, and one sentence about what felt hard",
+        "Ask: Did anything go better than I expected? Even one small thing counts",
+        "Plan one restorative activity for the next hour: a walk, music, food, quiet hobby"
+      ]
     }
   ],
   "tools": [
@@ -61,7 +90,7 @@
     {
       "id": "tool-sd-ladder",
       "name": "Social Exposure Ladder",
-      "description": "Build your own graded exposure ladder from easiest to hardest social interactions.",
+      "description": "Build your own graded exposure ladder from easiest to hardest social interactions, at your own pace.",
       "type": "exposure-ladder"
     },
     {
@@ -75,12 +104,24 @@
       "name": "Rewilding Social Self",
       "description": "Guided reflections to rediscover what kind of social being you want to be.",
       "type": "guided-journal"
+    },
+    {
+      "id": "tool-sd-postmortem",
+      "name": "Post-Social Recovery Plan",
+      "description": "Plan your post-event recovery ritual to decompress and prevent the social energy hangover.",
+      "type": "recovery-plan"
+    },
+    {
+      "id": "tool-sd-compassion",
+      "name": "Self-Compassion Letters",
+      "description": "Guided letter writing exercises for post-social self-criticism spirals.",
+      "type": "compassion-tool"
     }
   ],
-  "recommendedSounds": [
-    "Café ambience",
-    "Birdsong",
-    "Soft piano"
-  ],
-  "safetyGuidance": "Social detachment often starts as a protective strategy and that is okay — your system may have learned to rely on it for good reasons. If detachment is causing you distress or loneliness, gentle and gradual reconnection at your own pace is possible. If feelings of isolation are persistent or accompanied by hopelessness, please consider speaking with a therapist who can help you reconnect safely with yourself and others. You are not alone in feeling disconnected; many people travel this road and find their way back to meaningful connection."
+  "recommendedSoundIds": ["birds", "ambient", "singing-bowl", "forest"],
+  "timerConfig": {
+    "defaultDurationMinutes": 8,
+    "options": [5, 8, 10, 15]
+  },
+  "safetyGuidance": "Social detachment often starts as a protective strategy and that is okay — your system may have learned to rely on it for good reasons. Social anxiety is one of the most common and treatable anxiety conditions — you are far from alone in this. If detachment or social anxiety is causing you distress or loneliness, gentle and gradual reconnection at your own pace is possible. If feelings of isolation are persistent or accompanied by hopelessness, please consider speaking with a therapist. You are not alone in feeling disconnected; many people find their way back to meaningful connection."
 }

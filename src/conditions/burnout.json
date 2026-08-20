@@ -79,10 +79,10 @@
       "type": "recovery-plan"
     }
   ],
-  "recommendedSounds": [
-    "Forest",
-    "Rain",
-    "Ambient pads"
-  ],
+  "recommendedSoundIds": ["forest", "rain", "ambient"],
+  "timerConfig": {
+    "defaultDurationMinutes": 5,
+    "options": [4, 5, 7, 10]
+  },
   "safetyGuidance": "Burnout is a signal that your system has been carrying too much for too long, and recovery is absolutely possible with intentional rest and boundary-setting. If burnout is severe, persistent, or accompanied by thoughts of hopelessness, please speak with a mental health professional or your doctor. You do not have to earn rest; you deserve it simply because you are human."
 }

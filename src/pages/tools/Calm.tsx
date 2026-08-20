@@ -4,7 +4,7 @@ export default function Calm() {
   return (
     <Card
       title="Tools — Calm"
-      subtitle="Guided breathing, grounding, and relaxation techniques"
+      subtitle="Breathing exercises and relaxation techniques"
     />
   );
 }

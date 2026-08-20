@@ -81,10 +81,10 @@
       "type": "network-tool"
     }
   ],
-  "recommendedSounds": [
-    "Binaural beats",
-    "Drumming",
-    "Nature ambience"
-  ],
+  "recommendedSoundIds": ["ambient", "rain", "ocean"],
+  "timerConfig": {
+    "defaultDurationMinutes": 10,
+    "options": [5, 10, 15, 20]
+  },
   "safetyGuidance": "Reaching out about substance challenges takes enormous courage and you are not alone in this journey. Recovery is possible and there are many paths to it — therapy, support groups, medication-assisted treatment, and more. If substance use is putting you or others at risk, please reach out to a trusted medical or addiction specialist, local support group (SMART, AA, LifeRing), or your doctor. If you are in crisis or at risk of overdose, call your local emergency number or crisis line immediately. You deserve a life of freedom and that life is available to you. Help and treatment work. Recovery is not linear and every day counts."
 }

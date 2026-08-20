@@ -15,20 +15,24 @@ import {
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useAppStore } from '@/store';
-import { generateUid, hashPasswordSync } from '@/services/auth';
+import * as AuthService from '@/services/auth';
+
+// Re-export generateUid so any other component that imported it from here
+// continues to work without modification.
+export { generateUid } from '@/services/auth';
 
 const passwordRequirements = [
-  { label: 'At least 8 characters', test: (p: string) => p.length >= 8 },
+  { label: 'At least 8 characters',        test: (p: string) => p.length >= 8 },
   { label: 'At least one uppercase letter', test: (p: string) => /[A-Z]/.test(p) },
-  { label: 'At least one number', test: (p: string) => /\d/.test(p) },
+  { label: 'At least one number',           test: (p: string) => /\d/.test(p) },
 ];
 
 export default function CreateAccount() {
   const navigate = useNavigate();
-  const createAccount = useAppStore((s) => s.createAccount);
+  const setSession = useAppStore((s) => s.setSession);
   const loginDemo = useAppStore((s) => s.loginDemo);
 
-  const [uid] = useState(() => generateUid());
+  const [uid] = useState(() => AuthService.generateUid());
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [agreed, setAgreed] = useState(false);
@@ -37,8 +41,6 @@ export default function CreateAccount() {
   const [loading, setLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const uidRevealed = true;
 
   const passwordValid = useMemo(
     () => passwordRequirements.every((req) => req.test(password)),
@@ -58,33 +60,42 @@ export default function CreateAccount() {
     }
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
     if (!canSubmit) {
-      if (!passwordValid) setError('Password must meet all requirements.');
-      else if (!passwordsMatch) setError('Passwords do not match.');
-      else if (!agreed) setError('Please agree to the privacy notice to continue.');
+      if (!passwordValid) { setError('Password must meet all requirements.'); return; }
+      if (!passwordsMatch) { setError('Passwords do not match.'); return; }
+      if (!agreed)         { setError('Please agree to the privacy notice to continue.'); return; }
       return;
     }
+
     setLoading(true);
-    const hash = hashPasswordSync(password);
-    createAccount({
-      uid,
-      passwordHash: hash,
-      createdAt: new Date().toISOString(),
+
+    const result = await AuthService.createAccount(uid, password);
+
+    if (!result.success) {
+      setError(result.error ?? 'Account creation failed. Please try again.');
+      setLoading(false);
+      return;
+    }
+
+    // Set the session in the global store immediately after sign-up
+    setSession({
+      userId: result.userId!,
+      uid: result.uid!,
+      sessionStart: new Date().toISOString(),
+      isDemo: false,
     });
-    setTimeout(() => {
-      navigate('/', { replace: true });
-    }, 500);
+
+    navigate('/', { replace: true });
   };
 
   const onDemo = () => {
     setDemoLoading(true);
     loginDemo();
-    setTimeout(() => {
-      navigate('/', { replace: true });
-    }, 450);
+    setTimeout(() => navigate('/', { replace: true }), 450);
   };
 
   return (
@@ -98,6 +109,7 @@ export default function CreateAccount() {
         </p>
       </div>
 
+      {/* UID display */}
       <div className="rounded-2xl border border-accent-lavender/20 bg-accent-lavender/5 p-4 space-y-3">
         <div className="flex items-start gap-3">
           <div className="h-9 w-9 rounded-xl bg-accent-lavender/15 flex items-center justify-center flex-shrink-0">
@@ -118,14 +130,7 @@ export default function CreateAccount() {
                 type="button"
                 className="flex-shrink-0"
               >
-                {copied ? (
-                  <>
-                    <Check className="w-4 h-4" />
-                    Copied
-                  </>
-                ) : (
-                  <>Copy UID</>
-                )}
+                {copied ? <><Check className="w-4 h-4" />Copied</> : <>Copy UID</>}
               </Button>
             </div>
           </div>
@@ -137,6 +142,7 @@ export default function CreateAccount() {
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
+        {/* Password */}
         <div className="relative">
           <Input
             label="Create a password"
@@ -153,42 +159,26 @@ export default function CreateAccount() {
                 className="p-1 rounded-md text-text-muted hover:text-text-secondary transition-colors -mr-1"
                 tabIndex={-1}
               >
-                {showPassword ? (
-                  <EyeOff className="w-4.5 h-4.5" />
-                ) : (
-                  <Eye className="w-4.5 h-4.5" />
-                )}
+                {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
               </button>
             }
             autoComplete="new-password"
           />
         </div>
 
+        {/* Password requirements */}
         <div className="rounded-xl border border-surface-border bg-surface/40 p-3 space-y-1.5">
           {passwordRequirements.map((req) => {
             const ok = req.test(password);
             return (
               <div key={req.label} className="flex items-center gap-2">
-                <span
-                  className={[
-                    'h-4 w-4 rounded-full flex items-center justify-center flex-shrink-0 transition-all',
-                    ok
-                      ? 'bg-accent-green/15 text-accent-green'
-                      : 'bg-surface-hover/60 text-text-muted',
-                  ].join(' ')}
-                >
-                  {ok ? (
-                    <Check className="w-3 h-3" strokeWidth={3} />
-                  ) : (
-                    <X className="w-2.5 h-2.5" strokeWidth={3} />
-                  )}
+                <span className={[
+                  'h-4 w-4 rounded-full flex items-center justify-center flex-shrink-0 transition-all',
+                  ok ? 'bg-accent-green/15 text-accent-green' : 'bg-surface-hover/60 text-text-muted',
+                ].join(' ')}>
+                  {ok ? <Check className="w-3 h-3" strokeWidth={3} /> : <X className="w-2.5 h-2.5" strokeWidth={3} />}
                 </span>
-                <span
-                  className={[
-                    'text-xs leading-tight',
-                    ok ? 'text-text-secondary' : 'text-text-muted',
-                  ].join(' ')}
-                >
+                <span className={['text-xs leading-tight', ok ? 'text-text-secondary' : 'text-text-muted'].join(' ')}>
                   {req.label}
                 </span>
               </div>
@@ -196,6 +186,7 @@ export default function CreateAccount() {
           })}
         </div>
 
+        {/* Confirm password */}
         <Input
           label="Confirm password"
           type="password"
@@ -209,19 +200,14 @@ export default function CreateAccount() {
         {confirm.length > 0 && (
           <div className="flex items-center gap-2 -mt-2">
             {passwordsMatch ? (
-              <>
-                <Check className="w-4 h-4 text-accent-green" />
-                <span className="text-xs text-accent-green">Passwords match</span>
-              </>
+              <><Check className="w-4 h-4 text-accent-green" /><span className="text-xs text-accent-green">Passwords match</span></>
             ) : (
-              <>
-                <AlertCircle className="w-4 h-4 text-accent-rose" />
-                <span className="text-xs text-accent-rose">Passwords do not match</span>
-              </>
+              <><AlertCircle className="w-4 h-4 text-accent-rose" /><span className="text-xs text-accent-rose">Passwords do not match</span></>
             )}
           </div>
         )}
 
+        {/* Privacy agreement */}
         <label className="flex items-start gap-3 cursor-pointer select-none group">
           <input
             type="checkbox"
@@ -230,21 +216,18 @@ export default function CreateAccount() {
             className="peer sr-only"
             aria-label="Agree to privacy notice"
           />
-          <span
-            className={[
-              'mt-0.5 h-5 w-5 flex-shrink-0 rounded-md border transition-all flex items-center justify-center',
-              agreed
-                ? 'bg-accent-lavender border-accent-lavender text-white'
-                : 'border-surface-border bg-surface/40 group-hover:border-accent-lavender/40',
-            ].join(' ')}
-            aria-hidden
-          >
+          <span className={[
+            'mt-0.5 h-5 w-5 flex-shrink-0 rounded-md border transition-all flex items-center justify-center',
+            agreed
+              ? 'bg-accent-lavender border-accent-lavender text-white'
+              : 'border-surface-border bg-surface/40 group-hover:border-accent-lavender/40',
+          ].join(' ')} aria-hidden>
             {agreed && <Check className="w-3.5 h-3.5" strokeWidth={3} />}
           </span>
           <span className="text-xs text-text-secondary leading-relaxed">
-            I understand my data is stored{' '}
-            <strong className="text-text-primary">only on this device</strong> and I must{' '}
+            I understand my data is stored securely in the cloud and I must{' '}
             <strong className="text-text-primary">keep my UID safe</strong> to regain access.
+            No email or personal info is required.
           </span>
         </label>
 
@@ -270,31 +253,16 @@ export default function CreateAccount() {
 
       <div className="relative flex items-center gap-3 py-1">
         <div className="h-px flex-1 bg-surface-border" />
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-          Or
-        </span>
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">Or</span>
         <div className="h-px flex-1 bg-surface-border" />
       </div>
 
       <div className="space-y-2">
-        <Button
-          variant="secondary"
-          size="lg"
-          className="w-full"
-          onClick={onDemo}
-          loading={demoLoading}
-          type="button"
-        >
+        <Button variant="secondary" size="lg" className="w-full" onClick={onDemo} loading={demoLoading} type="button">
           {demoLoading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Entering demo mode...
-            </>
+            <><Loader2 className="w-5 h-5 animate-spin" />Entering demo mode...</>
           ) : (
-            <>
-              <Sparkles className="w-5 h-5" />
-              Try without logging in
-            </>
+            <><Sparkles className="w-5 h-5" />Try without logging in</>
           )}
         </Button>
         <p className="text-center text-[11px] text-text-muted leading-relaxed px-2">
@@ -304,10 +272,7 @@ export default function CreateAccount() {
 
       <div className="pt-2 text-center text-sm">
         <span className="text-text-secondary">Already have an account? </span>
-        <Link
-          to="/auth/login"
-          className="font-medium text-accent-lavender hover:text-accent-cyan transition-colors"
-        >
+        <Link to="/auth/login" className="font-medium text-accent-lavender hover:text-accent-cyan transition-colors">
           Go to login
         </Link>
       </div>

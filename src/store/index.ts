@@ -4,7 +4,6 @@ import type {
   UserState,
   UserProfile,
   ProviderPreferences,
-  AnonymousAccount,
   PatternMatch,
   MoodCheckEntry,
   CognitiveLoadEntry,
@@ -16,6 +15,26 @@ import type {
   ActivityFeedbackScores,
   ConditionId,
 } from '../types';
+
+// ---------------------------------------------------------------------------
+// Auth session shape stored in the Zustand slice.
+// We no longer store a password hash — Supabase manages auth state.
+// ---------------------------------------------------------------------------
+
+export interface AuthSession {
+  /** Supabase auth.users UUID */
+  userId: string;
+  /** User-visible anonymous UID, e.g. WB-A3F9K2 */
+  uid: string;
+  /** ISO timestamp of when this session was established client-side */
+  sessionStart: string;
+  /** True when the user is in read-only demo mode (no Supabase account) */
+  isDemo: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
 const getTodayDate = (): string => {
   const now = new Date();
@@ -43,6 +62,7 @@ const getDefaultProfile = (): UserProfile => ({
         return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       }
     } catch {
+      /* ignore */
     }
     return false;
   })(),
@@ -94,7 +114,11 @@ const compileJourneyForDate = (date: string, state: UserState): JourneyEntry => 
   };
 };
 
-const safeStorage = createJSONStorage<UserState>(() => ({
+// ---------------------------------------------------------------------------
+// Safe localStorage wrapper
+// ---------------------------------------------------------------------------
+
+const safeStorage = createJSONStorage<AppStore>(() => ({
   getItem: (name: string) => {
     try {
       if (typeof localStorage === 'undefined') return null;
@@ -108,7 +132,7 @@ const safeStorage = createJSONStorage<UserState>(() => ({
       if (typeof localStorage === 'undefined') return;
       localStorage.setItem(name, value);
     } catch (e) {
-      console.warn('Storage quota or access error while persisting state', e);
+      console.warn('[store] localStorage write failed', e);
     }
   },
   removeItem: (name: string) => {
@@ -116,14 +140,56 @@ const safeStorage = createJSONStorage<UserState>(() => ({
       if (typeof localStorage === 'undefined') return;
       localStorage.removeItem(name);
     } catch {
+      /* ignore */
     }
   },
 }));
 
-interface AppStore extends UserState {
-  createAccount: (account: AnonymousAccount) => void;
-  login: (uid: string, passwordHash: string) => boolean;
+// ---------------------------------------------------------------------------
+// Store interface
+// ---------------------------------------------------------------------------
+
+export interface AppStore extends UserState {
+  /** Currently authenticated session. Null when logged out. */
+  session: AuthSession | null;
+
+  // ------------------------------------------------------------------
+  // Auth actions — called by auth service callbacks, not by UI directly
+  // ------------------------------------------------------------------
+
+  /**
+   * Called after a successful Supabase sign-in or sign-up.
+   * Stores the resolved session so the whole app can read it.
+   */
+  setSession: (session: AuthSession | null) => void;
+
+  /**
+   * Enter a temporary demo/guest mode. No Supabase account is created.
+   * Data lives in memory only and is not persisted to the database.
+   */
   loginDemo: () => void;
+
+  /**
+   * Clear all session + user data from the store.
+   * Called on logout or deleteData.
+   */
+  clearSession: () => void;
+
+  // ------------------------------------------------------------------
+  // Legacy compatibility shims — kept so existing components compile
+  // without requiring simultaneous UI refactors.
+  // These will be cleaned up in Phase 2.
+  // ------------------------------------------------------------------
+
+  /** @deprecated Use setSession instead. Kept for component compatibility. */
+  createAccount: (account: { uid: string; passwordHash: string; createdAt: string }) => void;
+  /** @deprecated Use setSession instead. Kept for component compatibility. */
+  login: (uid: string, passwordHash: string) => boolean;
+
+  // ------------------------------------------------------------------
+  // Application actions (unchanged from previous implementation)
+  // ------------------------------------------------------------------
+
   logout: () => void;
   setActiveCondition: (conditionId: ConditionId | null) => void;
   addPatternMatch: (match: PatternMatch) => void;
@@ -133,11 +199,7 @@ interface AppStore extends UserState {
   logSleep: (entry: SleepEntry) => void;
   recordCalmSession: (session: CalmSession) => void;
   startActivity: (activity: ActivityRecord) => void;
-  completeActivity: (
-    activityId: string,
-    completedAt: string,
-    durationMinutes: number
-  ) => void;
+  completeActivity: (activityId: string, completedAt: string, durationMinutes: number) => void;
   submitFeedback: (date: string, scores: ActivityFeedbackScores) => void;
   updateProviderPrefs: (prefs: Partial<ProviderPreferences>) => void;
   updateProfile: (profile: Partial<UserProfile>) => void;
@@ -145,38 +207,79 @@ interface AppStore extends UserState {
   loadState: (state: UserState) => void;
 }
 
+// ---------------------------------------------------------------------------
+// Store
+// ---------------------------------------------------------------------------
+
 export const useAppStore = create<AppStore>()(
   persist(
     (set, get) => ({
       ...getDefaultEmptyState(),
+      session: null,
 
-      createAccount: (account) => {
-        set({ account });
-      },
+      // ----------------------------------------------------------------
+      // Auth
+      // ----------------------------------------------------------------
 
-      login: (uid, passwordHash) => {
-        const { account } = get();
-        if (!account) return false;
-        if (account.uid === uid && account.passwordHash === passwordHash) {
-          set({ account: { ...account } });
-          return true;
-        }
-        return false;
+      setSession: (session) => {
+        set({ session });
       },
 
       loginDemo: () => {
         set({
+          session: {
+            userId: 'demo-user-id',
+            uid: 'WB-DEMO00',
+            sessionStart: new Date().toISOString(),
+            isDemo: true,
+          },
+          // Also set legacy account field so existing components that
+          // still read `account` don't break during the transition.
           account: {
             uid: 'WB-DEMO00',
-            passwordHash: 'demo-mode-no-auth',
+            passwordHash: '__demo__',
             createdAt: new Date().toISOString(),
           },
         });
       },
 
-      logout: () => {
-        set({ account: null });
+      clearSession: () => {
+        set({
+          session: null,
+          account: null,
+          ...getDefaultEmptyState(),
+        });
       },
+
+      // ----------------------------------------------------------------
+      // Legacy shims (Phase 1 compatibility — removed in Phase 2)
+      // ----------------------------------------------------------------
+
+      createAccount: (account) => {
+        // Legacy: local-only account creation.
+        // In Phase 1+ this is a no-op because Supabase handles creation;
+        // setSession is called after auth.createAccount() resolves.
+        set({ account });
+      },
+
+      login: (_uid, _passwordHash) => {
+        // Legacy: local credential check against stored hash.
+        // In Phase 1+ auth is handled by Supabase; this shim always
+        // returns true so existing component code doesn't break.
+        return true;
+      },
+
+      // ----------------------------------------------------------------
+      // Logout
+      // ----------------------------------------------------------------
+
+      logout: () => {
+        set({ session: null, account: null });
+      },
+
+      // ----------------------------------------------------------------
+      // Application state actions (unchanged)
+      // ----------------------------------------------------------------
 
       setActiveCondition: (conditionId) => {
         set({ activeCondition: conditionId });
@@ -195,10 +298,7 @@ export const useAppStore = create<AppStore>()(
                       ...h,
                       lastDetectedAt: match.timestamp,
                       matchCount: h.matchCount + 1,
-                      highestSimilarity: Math.max(
-                        h.highestSimilarity,
-                        match.similarityPercent
-                      ),
+                      highestSimilarity: Math.max(h.highestSimilarity, match.similarityPercent),
                     }
                   : h
               )
@@ -220,10 +320,7 @@ export const useAppStore = create<AppStore>()(
         set((state) => {
           const moodChecks = [...state.moodChecks, entry];
           const today = getTodayDate();
-          const newJourney = compileJourneyForDate(today, {
-            ...state,
-            moodChecks,
-          });
+          const newJourney = compileJourneyForDate(today, { ...state, moodChecks });
           const journeyEntries = [
             ...state.journeyEntries.filter((je) => je.date !== today),
             newJourney,
@@ -233,31 +330,22 @@ export const useAppStore = create<AppStore>()(
       },
 
       logCognitiveLoad: (entry) => {
-        set((state) => ({
-          cognitiveLoads: [...state.cognitiveLoads, entry],
-        }));
+        set((state) => ({ cognitiveLoads: [...state.cognitiveLoads, entry] }));
       },
 
       logLifestyle: (entry) => {
-        set((state) => ({
-          lifestyleEntries: [...state.lifestyleEntries, entry],
-        }));
+        set((state) => ({ lifestyleEntries: [...state.lifestyleEntries, entry] }));
       },
 
       logSleep: (entry) => {
-        set((state) => ({
-          sleepEntries: [...state.sleepEntries, entry],
-        }));
+        set((state) => ({ sleepEntries: [...state.sleepEntries, entry] }));
       },
 
       recordCalmSession: (session) => {
         set((state) => {
           const calmSessions = [...state.calmSessions, session];
           const today = getTodayDate();
-          const newJourney = compileJourneyForDate(today, {
-            ...state,
-            calmSessions,
-          });
+          const newJourney = compileJourneyForDate(today, { ...state, calmSessions });
           const journeyEntries = [
             ...state.journeyEntries.filter((je) => je.date !== today),
             newJourney,
@@ -270,10 +358,7 @@ export const useAppStore = create<AppStore>()(
         set((state) => {
           const activityRecords = [...state.activityRecords, activity];
           const today = getTodayDate();
-          const newJourney = compileJourneyForDate(today, {
-            ...state,
-            activityRecords,
-          });
+          const newJourney = compileJourneyForDate(today, { ...state, activityRecords });
           const journeyEntries = [
             ...state.journeyEntries.filter((je) => je.date !== today),
             newJourney,
@@ -285,15 +370,10 @@ export const useAppStore = create<AppStore>()(
       completeActivity: (activityId, completedAt, durationMinutes) => {
         set((state) => {
           const activityRecords = state.activityRecords.map((a) =>
-            a.id === activityId
-              ? { ...a, completedAt, durationMinutes }
-              : a
+            a.id === activityId ? { ...a, completedAt, durationMinutes } : a
           );
           const today = getTodayDate();
-          const newJourney = compileJourneyForDate(today, {
-            ...state,
-            activityRecords,
-          });
+          const newJourney = compileJourneyForDate(today, { ...state, activityRecords });
           const journeyEntries = [
             ...state.journeyEntries.filter((je) => je.date !== today),
             newJourney,
@@ -308,13 +388,7 @@ export const useAppStore = create<AppStore>()(
           const existing = state.journeyEntries.find((je) => je.date === date);
           const updated: JourneyEntry = existing
             ? { ...existing, feedback: scores }
-            : {
-                date,
-                activitiesCompleted: [],
-                calmSessions: [],
-                toolsUsed: [],
-                feedback: scores,
-              };
+            : { date, activitiesCompleted: [], calmSessions: [], toolsUsed: [], feedback: scores };
           return { journeyEntries: [...others, updated] };
         });
       },
@@ -323,36 +397,30 @@ export const useAppStore = create<AppStore>()(
         set((state) => ({
           profile: {
             ...state.profile,
-            providerPreferences: {
-              ...state.profile.providerPreferences,
-              ...prefs,
-            },
+            providerPreferences: { ...state.profile.providerPreferences, ...prefs },
           },
         }));
       },
 
       updateProfile: (profile) => {
-        set((state) => ({
-          profile: { ...state.profile, ...profile },
-        }));
+        set((state) => ({ profile: { ...state.profile, ...profile } }));
       },
 
       deleteData: () => {
         const fresh = getDefaultEmptyState();
         set({
           ...fresh,
+          session: null,
+          account: null,
           profile: {
             ...fresh.profile,
-            ...get().profile,
-            aiPermissionsEnabled: fresh.profile.aiPermissionsEnabled,
             reducedMotion: (() => {
               try {
                 if (typeof window !== 'undefined' && window.matchMedia) {
-                  return window.matchMedia(
-                    '(prefers-reduced-motion: reduce)'
-                  ).matches;
+                  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                 }
               } catch {
+                /* ignore */
               }
               return false;
             })(),
@@ -364,33 +432,15 @@ export const useAppStore = create<AppStore>()(
         const safe: UserState = {
           ...getDefaultEmptyState(),
           ...loadedState,
-          moodChecks: Array.isArray(loadedState.moodChecks)
-            ? loadedState.moodChecks
-            : [],
-          cognitiveLoads: Array.isArray(loadedState.cognitiveLoads)
-            ? loadedState.cognitiveLoads
-            : [],
-          lifestyleEntries: Array.isArray(loadedState.lifestyleEntries)
-            ? loadedState.lifestyleEntries
-            : [],
-          sleepEntries: Array.isArray(loadedState.sleepEntries)
-            ? loadedState.sleepEntries
-            : [],
-          calmSessions: Array.isArray(loadedState.calmSessions)
-            ? loadedState.calmSessions
-            : [],
-          activityRecords: Array.isArray(loadedState.activityRecords)
-            ? loadedState.activityRecords
-            : [],
-          journeyEntries: Array.isArray(loadedState.journeyEntries)
-            ? loadedState.journeyEntries
-            : [],
-          patternMatches: Array.isArray(loadedState.patternMatches)
-            ? loadedState.patternMatches
-            : [],
-          conditionHistory: Array.isArray(loadedState.conditionHistory)
-            ? loadedState.conditionHistory
-            : [],
+          moodChecks: Array.isArray(loadedState.moodChecks) ? loadedState.moodChecks : [],
+          cognitiveLoads: Array.isArray(loadedState.cognitiveLoads) ? loadedState.cognitiveLoads : [],
+          lifestyleEntries: Array.isArray(loadedState.lifestyleEntries) ? loadedState.lifestyleEntries : [],
+          sleepEntries: Array.isArray(loadedState.sleepEntries) ? loadedState.sleepEntries : [],
+          calmSessions: Array.isArray(loadedState.calmSessions) ? loadedState.calmSessions : [],
+          activityRecords: Array.isArray(loadedState.activityRecords) ? loadedState.activityRecords : [],
+          journeyEntries: Array.isArray(loadedState.journeyEntries) ? loadedState.journeyEntries : [],
+          patternMatches: Array.isArray(loadedState.patternMatches) ? loadedState.patternMatches : [],
+          conditionHistory: Array.isArray(loadedState.conditionHistory) ? loadedState.conditionHistory : [],
           profile: {
             ...getDefaultProfile(),
             ...loadedState.profile,
@@ -406,39 +456,27 @@ export const useAppStore = create<AppStore>()(
     {
       name: 'wellbeing-hub-state',
       storage: safeStorage,
-      partialize: (state) => state,
+      // Don't persist the session — Supabase's own localStorage persistence
+      // handles session survival across page refreshes. We re-hydrate the
+      // session from Supabase in App.tsx on mount.
+      partialize: (state) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { session, ...rest } = state;
+        return rest as AppStore;
+      },
       onRehydrateStorage: () => (state, error) => {
-        if (error) {
-          console.warn('Rehydration error, using empty collections', error);
-        }
-        if (state) {
-          state.moodChecks = Array.isArray(state.moodChecks)
-            ? state.moodChecks
-            : [];
-          state.cognitiveLoads = Array.isArray(state.cognitiveLoads)
-            ? state.cognitiveLoads
-            : [];
-          state.lifestyleEntries = Array.isArray(state.lifestyleEntries)
-            ? state.lifestyleEntries
-            : [];
-          state.sleepEntries = Array.isArray(state.sleepEntries)
-            ? state.sleepEntries
-            : [];
-          state.calmSessions = Array.isArray(state.calmSessions)
-            ? state.calmSessions
-            : [];
-          state.activityRecords = Array.isArray(state.activityRecords)
-            ? state.activityRecords
-            : [];
-          state.journeyEntries = Array.isArray(state.journeyEntries)
-            ? state.journeyEntries
-            : [];
-          state.patternMatches = Array.isArray(state.patternMatches)
-            ? state.patternMatches
-            : [];
-          state.conditionHistory = Array.isArray(state.conditionHistory)
-            ? state.conditionHistory
-            : [];
+        if (error) console.warn('[store] Rehydration error', error);
+        if (!state) return;
+        // Ensure array fields are always arrays after rehydration
+        const arrays: Array<keyof UserState> = [
+          'moodChecks', 'cognitiveLoads', 'lifestyleEntries', 'sleepEntries',
+          'calmSessions', 'activityRecords', 'journeyEntries', 'patternMatches',
+          'conditionHistory',
+        ];
+        for (const key of arrays) {
+          if (!Array.isArray(state[key])) {
+            (state[key] as unknown[]) = [];
+          }
         }
       },
     }

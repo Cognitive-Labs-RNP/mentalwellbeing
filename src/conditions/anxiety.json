@@ -18,6 +18,20 @@
       ]
     },
     {
+      "id": "anx-box-01",
+      "title": "Box Breathing Reset",
+      "durationMinutes": 5,
+      "type": "breathing",
+      "instructions": [
+        "Sit upright and place both feet flat on the floor",
+        "Exhale all the air out of your lungs slowly",
+        "Inhale through your nose for 4 slow counts",
+        "Hold your breath comfortably for 4 counts",
+        "Exhale through your mouth for 4 counts",
+        "Hold for 4 counts with empty lungs; repeat the box 5 times"
+      ]
+    },
+    {
       "id": "anx-ground-01",
       "title": "5-4-3-2-1 Grounding Technique",
       "durationMinutes": 5,
@@ -47,6 +61,34 @@
       ]
     },
     {
+      "id": "anx-sensory-01",
+      "title": "5-Minute Sensory Reset",
+      "durationMinutes": 5,
+      "type": "grounding",
+      "instructions": [
+        "Close your eyes and take 3 deep centering breaths",
+        "Wash your hands with cool water and notice the temperature on your skin",
+        "Wrap both hands around a cold glass of water and hold it for 30 seconds",
+        "Open your eyes and slowly look around the room, noticing objects you have not paid attention to before",
+        "Eat one piece of food (fruit, chocolate, nut) as slowly as you can, chewing thoroughly and noticing flavour",
+        "Put your hand on your heart and take 3 more breaths before returning to your day"
+      ]
+    },
+    {
+      "id": "anx-stretch-01",
+      "title": "Tension Release Stretch Sequence",
+      "durationMinutes": 6,
+      "type": "relaxation",
+      "instructions": [
+        "Stand up, feet hip-width apart, and roll your shoulders back 5 times then forward 5 times",
+        "Clasp hands behind your back, straighten arms, and lift gently away from your body for 3 deep breaths",
+        "Slowly tilt your head to the left, hold 3 breaths, then to the right, hold 3 breaths",
+        "Interlace fingers, turn palms up, and stretch arms overhead, leaning slightly left then right",
+        "Fold forward gently from the hips, letting arms hang heavy, and take 5 slow breaths",
+        "Roll up slowly one vertebra at a time and notice how your body feels"
+      ]
+    },
+    {
       "id": "anx-thought-01",
       "title": "Worry Thought Reframing",
       "durationMinutes": 7,
@@ -58,6 +100,47 @@
         "What is the worst that could happen? Could I handle that?",
         "What is a more balanced way to look at this situation?",
         "Write down one small action you can take right now if appropriate"
+      ]
+    },
+    {
+      "id": "anx-stress-list-01",
+      "title": "Stress Deconstruction List",
+      "durationMinutes": 8,
+      "type": "thought",
+      "instructions": [
+        "Write down everything that currently feels stressful or overwhelming, one item per line",
+        "Read through your list and place a star next to items with a deadline within the next 24 hours",
+        "Place a circle next to items that are truly within your control right now",
+        "For starred+circled items, write ONE tiny next action you can take in the next 2 hours",
+        "For items you circled without a star, schedule one 15-minute slot later this week to address them",
+        "For items you cannot control, cross them off the list and say aloud: I release what I cannot change"
+      ]
+    },
+    {
+      "id": "anx-social-label-01",
+      "title": "Anxiety Labelling & Normalising",
+      "durationMinutes": 3,
+      "type": "thought",
+      "instructions": [
+        "Say silently or on paper, finish these sentences: I am feeling _________ (name the exact feeling: nervous, exposed, judged, hot, tight)",
+        "This feeling makes me want to _________ (escape, hide, leave, freeze)",
+        "I have felt this way before and I got through it: TRUE / FALSE",
+        "The most likely outcome of this situation is _________ (not the worst case, the realistic case)",
+        "One kind thing I can tell myself right now is: _________",
+        "Now take 3 slow box breaths and choose your next small step"
+      ]
+    },
+    {
+      "id": "anx-social-script-01",
+      "title": "Conversation Safety Script",
+      "durationMinutes": 5,
+      "type": "thought",
+      "instructions": [
+        "Before entering an anxiety-provoking situation, write down 3 safe, open-ended questions: How's your week been? Seen anything good lately? Working on anything fun?",
+        "Write down 2 safe responses for yourself: I agree completely / That sounds really interesting / Tell me more about that",
+        "Write 1 graceful exit line: It was so good catching up, I need to go grab a drink / check on something, I'll be around later!",
+        "Read through your script once and fold it away — just knowing it's there will reduce uncertainty",
+        "Remember: most people are thinking about themselves, not judging you — that is the quiet truth of most social moments"
       ]
     }
   ],
@@ -91,12 +174,42 @@
       "name": "Calming Scripts Library",
       "description": "Collection of short, evidence-based scripts for rapid anxiety reduction in various situations.",
       "type": "coping-scripts"
+    },
+    {
+      "id": "tool-anx-timeout",
+      "name": "Timeout Reminder",
+      "description": "Gentle reminder to take short breaks, stretch, and hydrate on a custom schedule.",
+      "type": "reminder"
+    },
+    {
+      "id": "tool-anx-boundary",
+      "name": "Boundary Builder",
+      "description": "Scripts and templates for setting kind but firm boundaries around time and energy.",
+      "type": "resource-library"
+    },
+    {
+      "id": "tool-anx-relax",
+      "name": "Progressive Relaxation Audio",
+      "description": "Full-body relaxation audio guide to release accumulated stress and tension.",
+      "type": "guided-audio"
+    },
+    {
+      "id": "tool-anx-thought-record",
+      "name": "Social Thought Record",
+      "description": "CBT thought record for challenging anxious social predictions and checking them against reality.",
+      "type": "thought-record"
+    },
+    {
+      "id": "tool-anx-conversation",
+      "name": "Conversation Starter Library",
+      "description": "50+ conversation starters by context: work, parties, small groups — for moments anxiety makes words feel impossible.",
+      "type": "starter-library"
     }
   ],
-  "recommendedSounds": [
-    "Ocean",
-    "Rain",
-    "Brown noise"
-  ],
-  "safetyGuidance": "Anxiety is a common and treatable experience. If your anxiety feels overwhelming, persistent, or is interfering with daily life, consider reaching out to a mental health professional or your primary care provider. If you ever feel like you cannot keep yourself safe, please contact your local crisis line or emergency services immediately. You are not alone in this."
+  "recommendedSoundIds": ["ocean", "rain", "brown-noise", "river", "forest"],
+  "timerConfig": {
+    "defaultDurationMinutes": 5,
+    "options": [5, 7, 10, 15]
+  },
+  "safetyGuidance": "Anxiety is a common and treatable experience. Stress is a normal part of life, but when it becomes constant or overwhelming it can affect your health and wellbeing. If anxiety or stress is interfering with your sleep, relationships, work, or ability to enjoy life, consider reaching out to a mental health professional or your primary care provider. If you ever feel like you cannot keep yourself safe, please contact your local crisis line or emergency services immediately. You are not alone in this."
 }

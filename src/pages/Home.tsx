@@ -16,18 +16,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/Button';
 
 const disorders = [
-  { id: 'anxiety', name: 'Anxiety', color: 'from-accent-cyan/25 to-sky-500/10', border: 'border-accent-cyan/25', text: 'text-accent-cyan' },
-  { id: 'depression', name: 'Depression', color: 'from-accent-lavender/25 to-purple-500/10', border: 'border-accent-lavender/25', text: 'text-accent-lavender' },
-  { id: 'burnout', name: 'Burnout', color: 'from-accent-amber/25 to-orange-500/10', border: 'border-accent-amber/25', text: 'text-accent-amber' },
-  { id: 'adhd', name: 'ADHD', color: 'from-accent-cyan/25 to-emerald-500/10', border: 'border-accent-cyan/25', text: 'text-accent-cyan' },
-  { id: 'ocd', name: 'OCD', color: 'from-accent-lavender/25 to-rose-500/10', border: 'border-accent-lavender/25', text: 'text-accent-lavender' },
-  { id: 'ptsd', name: 'PTSD', color: 'from-accent-rose/25 to-purple-500/10', border: 'border-accent-rose/25', text: 'text-accent-rose' },
-  { id: 'cognitive-overload', name: 'Cognitive Overload', color: 'from-accent-amber/25 to-amber-500/10', border: 'border-accent-amber/25', text: 'text-accent-amber' },
-  { id: 'anger-issues', name: 'Anger & Irritation', color: 'from-accent-rose/25 to-red-500/10', border: 'border-accent-rose/25', text: 'text-accent-rose' },
-  { id: 'social-detachment', name: 'Social Detachment', color: 'from-accent-cyan/25 to-teal-500/10', border: 'border-accent-cyan/25', text: 'text-accent-cyan' },
-  { id: 'social-anxiety', name: 'Social Anxiety', color: 'from-accent-lavender/25 to-indigo-500/10', border: 'border-accent-lavender/25', text: 'text-accent-lavender' },
-  { id: 'self-esteem', name: 'Self-Esteem', color: 'from-accent-green/25 to-emerald-500/10', border: 'border-accent-green/25', text: 'text-accent-green' },
-  { id: 'substance-related', name: 'Substance-Related', color: 'from-accent-amber/25 to-rose-500/10', border: 'border-accent-amber/25', text: 'text-accent-amber' },
+  { id: 'anxiety',           name: 'Anxiety',             color: 'from-accent-cyan/25 to-sky-500/10',       border: 'border-accent-cyan/25',     text: 'text-accent-cyan' },
+  { id: 'depressive-symptoms', name: 'Depressive Symptoms', color: 'from-accent-lavender/25 to-purple-500/10', border: 'border-accent-lavender/25', text: 'text-accent-lavender' },
+  { id: 'burnout',           name: 'Burnout',             color: 'from-accent-amber/25 to-orange-500/10',   border: 'border-accent-amber/25',    text: 'text-accent-amber' },
+  { id: 'adhd',              name: 'ADHD',                color: 'from-accent-cyan/25 to-emerald-500/10',   border: 'border-accent-cyan/25',     text: 'text-accent-cyan' },
+  { id: 'ocd',               name: 'OCD',                 color: 'from-accent-lavender/25 to-rose-500/10',  border: 'border-accent-lavender/25', text: 'text-accent-lavender' },
+  { id: 'ptsd',              name: 'PTSD',                color: 'from-accent-rose/25 to-purple-500/10',    border: 'border-accent-rose/25',     text: 'text-accent-rose' },
+  { id: 'cognitive-overload', name: 'Cognitive Overload', color: 'from-accent-amber/25 to-amber-500/10',   border: 'border-accent-amber/25',    text: 'text-accent-amber' },
+  { id: 'anger-irritation',  name: 'Anger & Irritation',  color: 'from-accent-rose/25 to-red-500/10',       border: 'border-accent-rose/25',     text: 'text-accent-rose' },
+  { id: 'social-detachment', name: 'Social Detachment',   color: 'from-accent-cyan/25 to-teal-500/10',      border: 'border-accent-cyan/25',     text: 'text-accent-cyan' },
+  { id: 'self-esteem',       name: 'Self-Esteem',         color: 'from-accent-green/25 to-emerald-500/10',  border: 'border-accent-green/25',    text: 'text-accent-green' },
+  { id: 'substance-related', name: 'Substance-Related',   color: 'from-accent-amber/25 to-rose-500/10',     border: 'border-accent-amber/25',    text: 'text-accent-amber' },
 ];
 
 const features = [
@@ -42,7 +41,7 @@ const features = [
   {
     icon: BrainCircuit,
     title: 'Condition-specific support',
-    description: 'Tools, sounds and guides tailored to 12 common mental health conditions and challenges.',
+    description: 'Tools, sounds and guides tailored to 11 common mental health conditions and challenges.',
     gradient: 'from-accent-cyan/25 to-sky-500/15',
     border: 'border-accent-cyan/25',
     iconColor: 'text-accent-cyan',

@@ -92,10 +92,10 @@
       "type": "resource-library"
     }
   ],
-  "recommendedSounds": [
-    "Sunrise",
-    "Coffee shop ambience",
-    "Acoustic guitar"
-  ],
+  "recommendedSoundIds": ["birds", "ocean", "ambient", "forest"],
+  "timerConfig": {
+    "defaultDurationMinutes": 5,
+    "options": [4, 5, 10, 15]
+  },
   "safetyGuidance": "General wellbeing is an ongoing, gentle practice rather than a destination. Some days will feel lighter and some days will feel harder, and both are completely normal. If you notice a persistent shift in your mood or functioning that lasts more than a couple of weeks, it may be worth checking in with a healthcare provider. Taking care of yourself is one of the most important things you can do."
 }

@@ -79,10 +79,10 @@
       "type": "containment-tool"
     }
   ],
-  "recommendedSounds": [
-    "Heartbeat",
-    "Ocean waves",
-    "Fire crackle"
-  ],
+  "recommendedSoundIds": ["ocean", "fireplace", "singing-bowl"],
+  "timerConfig": {
+    "defaultDurationMinutes": 6,
+    "options": [5, 6, 10, 15]
+  },
   "safetyGuidance": "PTSD is a treatable condition and you are not broken; your nervous system learned to protect you and now needs help feeling safe again. Evidence-based therapies like EMDR, CBT, and somatic therapies can be deeply effective. If you are experiencing PTSD symptoms, please consider working with a trauma-specialised mental health professional. If you ever feel unsafe, contact your local crisis line or emergency services immediately. Recovery is possible and you deserve skilled support on your journey."
 }

@@ -78,10 +78,10 @@
       "type": "boundary-selfrespect"
     }
   ],
-  "recommendedSounds": [
-    "Harp",
-    "Sunrise ambience",
-    "Crystal bowls"
-  ],
+  "recommendedSoundIds": ["singing-bowl", "ambient", "birds"],
+  "timerConfig": {
+    "defaultDurationMinutes": 5,
+    "options": [4, 5, 7, 10]
+  },
   "safetyGuidance": "Low self-esteem is usually learned, not the truth about you — it can be unlearned with intentional practice and often responds well to therapy approaches like CBT, ACT, and compassion-focused therapy. If persistent low self-worth is accompanied by self-critical thoughts of hopelessness, speaking with a therapist can help you reconnect to yourself the kindness you so freely give others. You are worthy of your own kindness, not the version of yourself; worthiness is not earned, it is your birthright."
 }

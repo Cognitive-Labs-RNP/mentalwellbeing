@@ -4,13 +4,12 @@ import { User, Lock, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useAppStore } from '@/store';
-import { hashPasswordSync } from '@/services/auth';
+import * as AuthService from '@/services/auth';
 
 export default function Login() {
   const navigate = useNavigate();
-  const login = useAppStore((s) => s.login);
+  const setSession = useAppStore((s) => s.setSession);
   const loginDemo = useAppStore((s) => s.loginDemo);
-  const account = useAppStore((s) => s.account);
 
   const [uid, setUid] = useState('');
   const [password, setPassword] = useState('');
@@ -21,32 +20,37 @@ export default function Login() {
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
     if (!uid.trim() || !password) {
       setError('Please enter both your UID and password.');
       return;
     }
+
     setLoading(true);
-    const hash = hashPasswordSync(password);
-    const ok = login(uid.trim().toUpperCase(), hash);
-    if (ok) {
-      navigate('/', { replace: true });
+    const result = await AuthService.login(uid.trim().toUpperCase(), password);
+
+    if (!result.success) {
+      setError(result.error ?? 'Login failed. Please try again.');
+      setLoading(false);
       return;
     }
-    if (account) {
-      setError('Incorrect UID or password. Try again or continue as guest.');
-    } else {
-      setError('No account found on this device. Create an account or continue without logging in.');
-    }
-    setLoading(false);
+
+    // Persist the resolved session into the store so the whole app can read it
+    setSession({
+      userId: result.userId!,
+      uid: result.uid!,
+      sessionStart: new Date().toISOString(),
+      isDemo: false,
+    });
+
+    navigate('/', { replace: true });
   };
 
-  const onDemo = async () => {
+  const onDemo = () => {
     setDemoLoading(true);
     setError(null);
     loginDemo();
-    setTimeout(() => {
-      navigate('/', { replace: true });
-    }, 450);
+    setTimeout(() => navigate('/', { replace: true }), 450);
   };
 
   return (

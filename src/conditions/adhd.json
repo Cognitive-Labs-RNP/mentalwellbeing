@@ -91,10 +91,10 @@
       "type": "gamified-tracker"
     }
   ],
-  "recommendedSounds": [
-    "White noise",
-    "Video game ambience",
-    "Lo-fi beats"
-  ],
+  "recommendedSoundIds": ["white-noise", "brown-noise", "rain"],
+  "timerConfig": {
+    "defaultDurationMinutes": 15,
+    "options": [15, 25, 30, 45]
+  },
   "safetyGuidance": "ADHD is a neurodevelopmental difference with many strengths, and there are effective strategies and supports available. If ADHD symptoms are significantly affecting your work, relationships, or quality of life, consider speaking with a healthcare provider or mental health professional who specialises in ADHD. Remember to be patient and kind to yourself as you find what works best for you."
 }

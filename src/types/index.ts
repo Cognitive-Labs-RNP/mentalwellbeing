@@ -1,37 +1,135 @@
+// ---------------------------------------------------------------------------
+// Condition IDs — exactly 11 primary conditions + general-wellbeing fallback
+// ---------------------------------------------------------------------------
+
 export type ConditionId =
   | 'anxiety'
-  | 'depression'
-  | 'burnout'
   | 'adhd'
   | 'ocd'
+  | 'depressive-symptoms'
   | 'ptsd'
   | 'cognitive-overload'
-  | 'anger-issues'
+  | 'burnout'
+  | 'anger-irritation'
   | 'social-detachment'
-  | 'social-anxiety'
   | 'self-esteem'
   | 'substance-related'
-  | 'stress'
-  | 'anger'
-  | 'general-wellbeing';
+  | 'general-wellbeing'; // non-condition fallback / general support
+
+// ---------------------------------------------------------------------------
+// Sound library
+// ---------------------------------------------------------------------------
+
+export type SoundCategory = 'nature' | 'noise' | 'ambient';
+
+export interface Sound {
+  id: string;
+  name: string;
+  category: SoundCategory;
+  /** Path relative to /public, e.g. /sounds/rain.mp3 */
+  file: string;
+  description: string;
+  loopable: boolean;
+  /** ConditionIds that benefit from this sound */
+  recommendedFor: ConditionId[];
+}
+
+// ---------------------------------------------------------------------------
+// Condition configuration (mirrors the JSON files in src/conditions/)
+// ---------------------------------------------------------------------------
+
+export interface TimerConfig {
+  defaultDurationMinutes: number;
+  options: number[];
+}
+
+export interface ImmediateAction {
+  id: string;
+  title: string;
+  durationMinutes: number;
+  type: string;
+  instructions: string[];
+}
+
+export interface ToolItem {
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+}
+
+/**
+ * Represents a single condition-specific solution/activity as stored
+ * in the condition JSON. Combines immediate actions and tools into
+ * a unified solution shape for the UI layer.
+ */
+export interface ConditionSolution {
+  id: string;
+  title: string;
+  description: string;
+  durationMinutes: number;
+  type: string;
+  /** Step-by-step instructions, if applicable */
+  instructions?: string[];
+}
+
+/** Full shape of a condition JSON file */
+export interface ConditionConfig {
+  conditionId: ConditionId;
+  name: string;
+  description: string;
+  immediateActions: ImmediateAction[];
+  tools: ToolItem[];
+  /** IDs referencing entries in the sound library (src/data/sounds.ts) */
+  recommendedSoundIds: string[];
+  timerConfig: TimerConfig;
+  safetyGuidance: string;
+}
+
+// ---------------------------------------------------------------------------
+// Activity tracking
+// ---------------------------------------------------------------------------
+
+export type ActivityType =
+  | 'breathing'
+  | 'grounding'
+  | 'meditation'
+  | 'journaling'
+  | 'movement'
+  | 'relaxation'
+  | 'thought'
+  | 'focus-timer'
+  | 'other';
+
+export interface Activity {
+  id: string;
+  conditionId: ConditionId;
+  title: string;
+  description?: string;
+  type: ActivityType;
+  durationMinutes: number;
+  instructions?: string[];
+}
+
+export interface ActivityRecord {
+  id: string;
+  conditionId: ConditionId;
+  activityId: string;
+  activityType: string;
+  title: string;
+  startedAt: string;
+  completedAt?: string;
+  durationMinutes?: number;
+  notes?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Analysis
+// ---------------------------------------------------------------------------
 
 export type SimilarityLevel = 'low' | 'medium' | 'high';
-
 export type ProgressSignal = 'improving' | 'stable' | 'declining';
-
 export type MoodScore = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-
-export interface ActivityFeedbackScores {
-  helpfulness: MoodScore;
-  easeOfUse: MoodScore;
-  wouldRepeat: MoodScore;
-}
-
-export interface AnonymousAccount {
-  uid: string;
-  passwordHash: string;
-  createdAt: string;
-}
 
 export interface StructuredSummary {
   mood: MoodScore;
@@ -47,6 +145,61 @@ export interface PatternMatch {
   similarityLevel: SimilarityLevel;
   timestamp: string;
 }
+
+/**
+ * Full result returned after an AI analysis run.
+ * Extends PatternMatch with richer narrative context.
+ */
+export interface AnalysisResult extends PatternMatch {
+  summary: StructuredSummary;
+  suggestedConditionName: string;
+  topInsights: string[];
+  recommendedConditionIds: ConditionId[];
+}
+
+// ---------------------------------------------------------------------------
+// Feedback
+// ---------------------------------------------------------------------------
+
+export interface ActivityFeedbackScores {
+  helpfulness: MoodScore;
+  easeOfUse: MoodScore;
+  wouldRepeat: MoodScore;
+}
+
+/**
+ * User feedback attached to a completed activity or session.
+ */
+export interface Feedback {
+  id: string;
+  activityId: string;
+  conditionId: ConditionId;
+  submittedAt: string;
+  scores: ActivityFeedbackScores;
+  /** Optional free-text comment */
+  comment?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Tool usage
+// ---------------------------------------------------------------------------
+
+/**
+ * Tracks which tools have been opened/used and how often,
+ * to support personalisation and persistence later.
+ */
+export interface ToolUsage {
+  toolId: string;
+  conditionId: ConditionId | null;
+  toolType: string;
+  openedAt: string;
+  completedAt?: string;
+  durationMinutes?: number;
+}
+
+// ---------------------------------------------------------------------------
+// Tracking entries
+// ---------------------------------------------------------------------------
 
 export interface MoodCheckEntry {
   id: string;
@@ -89,21 +242,14 @@ export interface CalmSession {
   startedAt: string;
   endedAt?: string;
   durationMinutes: number;
-  sound?: string;
+  /** Sound id from the sound library */
+  soundId?: string;
   technique: string;
 }
 
-export interface ActivityRecord {
-  id: string;
-  conditionId: ConditionId;
-  activityId: string;
-  activityType: string;
-  title: string;
-  startedAt: string;
-  completedAt?: string;
-  durationMinutes?: number;
-  notes?: string;
-}
+// ---------------------------------------------------------------------------
+// Journey / history
+// ---------------------------------------------------------------------------
 
 export interface JourneyEntry {
   date: string;
@@ -122,6 +268,16 @@ export interface ConditionHistoryItem {
   lastDetectedAt: string;
   matchCount: number;
   highestSimilarity: number;
+}
+
+// ---------------------------------------------------------------------------
+// User / auth
+// ---------------------------------------------------------------------------
+
+export interface AnonymousAccount {
+  uid: string;
+  passwordHash: string;
+  createdAt: string;
 }
 
 export interface ProviderPreferences {
@@ -156,30 +312,9 @@ export interface UserState {
   conditionHistory: ConditionHistoryItem[];
 }
 
-export interface ImmediateAction {
-  id: string;
-  title: string;
-  durationMinutes: number;
-  type: string;
-  instructions: string[];
-}
-
-export interface ToolItem {
-  id: string;
-  name: string;
-  description: string;
-  type: string;
-}
-
-export interface ConditionFile {
-  conditionId: ConditionId;
-  name: string;
-  description: string;
-  immediateActions: ImmediateAction[];
-  tools: ToolItem[];
-  recommendedSounds: string[];
-  safetyGuidance: string;
-}
+// ---------------------------------------------------------------------------
+// Store actions
+// ---------------------------------------------------------------------------
 
 export type AppAction =
   | { type: 'createAccount'; account: AnonymousAccount }
