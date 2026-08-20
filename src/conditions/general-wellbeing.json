@@ -1,0 +1,101 @@
+{
+  "conditionId": "general-wellbeing",
+  "name": "General Wellbeing",
+  "description": "Everyday support for maintaining balance, building positive habits, and nurturing your overall mental, emotional, and physical wellness.",
+  "immediateActions": [
+    {
+      "id": "gw-mindful-01",
+      "title": "Morning Mindful Check-In",
+      "durationMinutes": 5,
+      "type": "mindfulness",
+      "instructions": [
+        "Pause before reaching for your phone or starting tasks",
+        "Sit comfortably and take 3 slow breaths to arrive in the present",
+        "Ask yourself: How is my body feeling this morning? Scan from head to toes briefly",
+        "Ask: What is one word for my mood right now?",
+        "Ask: What is one small thing I would like to make space for today?",
+        "Write or mentally note your answers and take one more breath before beginning"
+      ]
+    },
+    {
+      "id": "gw-gratitude-01",
+      "title": "Three Good Things Reflection",
+      "durationMinutes": 4,
+      "type": "gratitude",
+      "instructions": [
+        "Find a quiet moment near the end of your day",
+        "Think back through the whole day from waking until now",
+        "Write down 3 specific good things that happened, however small: a good cup of tea, a kind message, a task finished, nice weather",
+        "For each one, write one sentence about why it happened or what made it good",
+        "Place a hand over your heart and take 2 slow breaths to let that feeling land",
+        "Notice if there is anything you want to intentionally repeat or create tomorrow"
+      ]
+    },
+    {
+      "id": "gw-move-01",
+      "title": "5-Minute Energy Boost Movement",
+      "durationMinutes": 5,
+      "type": "movement",
+      "instructions": [
+        "Stand with your feet shoulder-width apart",
+        "March in place lifting your knees for 60 seconds, swinging your arms",
+        "Do 10 slow arm circles forward then 10 backward",
+        "Step side to side for 60 seconds, gradually increasing speed if comfortable",
+        "Do 5 slow squats or knee bends, holding onto a surface if needed",
+        "Finish with 30 seconds of gentle bouncing on the balls of your feet, then stand still and notice your energy level"
+      ]
+    },
+    {
+      "id": "gw-connection-01",
+      "title": "Micro-Connection Practice",
+      "durationMinutes": 6,
+      "type": "connection",
+      "instructions": [
+        "Think of someone you care about who you have not connected with recently",
+        "Send them a short, genuine message: I thought of you today, hope you are doing well, or I enjoyed when we [memory]",
+        "Alternatively: say hello and thank you to someone who serves you today (barista, cashier, delivery person) with eye contact and a smile",
+        "Alternatively: give your full attention to a pet, plant, or even a favourite object in your home for 1 minute",
+        "Notice the feeling of connecting rather than scrolling alone",
+        "Journal one sentence about how that small interaction felt"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-gw-checkin",
+      "name": "Daily Check-In Journal",
+      "description": "Structured daily prompts covering mood, energy, sleep, movement, and intentions.",
+      "type": "journal"
+    },
+    {
+      "id": "tool-gw-habit",
+      "name": "Micro-Habit Builder",
+      "description": "Build tiny, sustainable wellbeing habits with gentle streaks and reminders.",
+      "type": "habit-tracker"
+    },
+    {
+      "id": "tool-gw-calm",
+      "name": "Ambient Sound Mixer",
+      "description": "Mix and match calming sounds, nature audio, and music to create your perfect ambience.",
+      "type": "sound-mixer"
+    },
+    {
+      "id": "tool-gw-reflect",
+      "name": "Weekly Reflection Guide",
+      "description": "Gentle prompts to reflect on wins, learnings, rest, and priorities for the week ahead.",
+      "type": "reflection-guide"
+    },
+    {
+      "id": "tool-gw-resource",
+      "name": "Wellbeing Library",
+      "description": "Curated collection of short articles, audio, and practices across all wellbeing topics.",
+      "type": "resource-library"
+    }
+  ],
+  "recommendedSounds": [
+    "Sunrise",
+    "Coffee shop ambience",
+    "Acoustic guitar"
+  ],
+  "safetyGuidance": "General wellbeing is an ongoing, gentle practice rather than a destination. Some days will feel lighter and some days will feel harder, and both are completely normal. If you notice a persistent shift in your mood or functioning that lasts more than a couple of weeks, it may be worth checking in with a healthcare provider. Taking care of yourself is one of the most important things you can do."
+}

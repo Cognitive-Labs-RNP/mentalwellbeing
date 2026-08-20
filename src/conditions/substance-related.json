@@ -1,0 +1,90 @@
+{
+  "conditionId": "substance-related",
+  "name": "Substance-Related Challenges",
+  "description": "Patterns of substance use (alcohol, drugs, medications, or behaviours) that feel out of your control, cause harm, or are interfering with relationships, work, health, or other areas of life you care about.",
+  "immediateActions": [
+    {
+      "id": "sub-delay-01",
+      "title": "Urge Surfing: 10-Minute Delay",
+      "durationMinutes": 10,
+      "type": "urge-surfing",
+      "instructions": [
+        "When an urge hits, remind yourself: Urges crest like ocean waves. They last 10-20 minutes maximum if I don't feed them.",
+        "Rate the urge from 1 to 10 right now",
+        "Sit comfortably and do this for the next 10 minutes: Notice WHERE in your body the urge lives",
+        "Describe the sensation without judging: tight? Burning? Restless? Empty? Jumpy?",
+        "Breathe INTO the sensation with curiosity, observe it rise and fall WITHOUT ACTING",
+        "After 10 minutes, re-rate the urge. Notice: It will have shifted.",
+        "Choose your next conscious choice from a pre-planned list"
+      ]
+    },
+    {
+      "id": "sub-halt-01",
+      "title": "HALT Check-In",
+      "durationMinutes": 5,
+      "type": "check-in",
+      "instructions": [
+        "HALT = Hungry? Angry? Lonely? Tired? — the four most common trigger states",
+        "Go through each letter and be honest: H - Am I genuinely physically hungry? When did I eat?",
+        "A - Am I angry, frustrated, or irritable? What's the feeling under it?",
+        "L - Am I lonely or feeling alone? Even company right now or disconnected?",
+        "T - Am I Tired? Sleep deprived or emotionally drained? how many hours sleep?",
+        "For whichever you answer YES: Take ONE small concrete action now",
+        "Examples: Eat snack (H) / vent journal or breathe (A) / call or text one person (L) / 10-min rest or drink water (T)"
+      ]
+    },
+    {
+      "id": "sub-distract-01",
+      "title": "5 D's Distraction Menu",
+      "durationMinutes": 8,
+      "type": "distraction",
+      "instructions": [
+        "DELAY: Tell yourself I'll decide in 15 minutes, not forever. Set a timer.",
+        "DEEP BREATHE: 5-4-3-2-1 grounding — breathe for 5 cycles 4 hold, 5 inhale,",
+        "DRINK WATER: Slowly drink a full glass of cold water. Notice the coolness.",
+        "DO SOMETHING ELSE: Physical movement, music, walk, stretch. Shower, cold splash, call someone",
+        "DISPUTE: Ask: Will using actually make anything better? 20 min, what actually better? No",
+        "What is something else that would actually help even 1% better right now?",
+        "After 15 minutes, re-check in without shame. Choose"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-sub-urge",
+      "name": "Urge Tracker & Logger",
+      "description": "Track urges: trigger, intensity, duration, location, what you did instead — patterns over time.",
+      "type": "urge-tracker"
+    },
+    {
+      "id": "toolsub-safetyplan",
+      "name": "Personalised Safety Plan",
+      "description": "Build your safety plan: Warning signs, triggers, people to call, safe places, emergency numbers.",
+      "type": "safety-plan"
+    },
+    {
+      "id": "tool-sub-rewards",
+      "name": "Sober Milestones & Rewards",
+      "description": "Track streaks days clean, and define rewards that matter to you.",
+      "type": "milestone-tracker"
+    },
+    {
+      "id": "tool-sub-cravings",
+      "name": "Craving Map",
+      "description": "Interactive tool for when cravings: urge surfing audio recordings meditations.",
+      "type": "craving-toolkit"
+    },
+    {
+      "id": "tool-sub-connections",
+      "name": "Support Network Builder",
+      "description": "Identify and map your support people and resources with contact one-touch reach out.",
+      "type": "network-tool"
+    }
+  ],
+  "recommendedSounds": [
+    "Binaural beats",
+    "Drumming",
+    "Nature ambience"
+  ],
+  "safetyGuidance": "Reaching out about substance challenges takes enormous courage and you are not alone in this journey. Recovery is possible and there are many paths to it — therapy, support groups, medication-assisted treatment, and more. If substance use is putting you or others at risk, please reach out to a trusted medical or addiction specialist, local support group (SMART, AA, LifeRing), or your doctor. If you are in crisis or at risk of overdose, call your local emergency number or crisis line immediately. You deserve a life of freedom and that life is available to you. Help and treatment work. Recovery is not linear and every day counts."
+}

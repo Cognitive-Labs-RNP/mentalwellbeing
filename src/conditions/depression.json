@@ -1,0 +1,101 @@
+{
+  "conditionId": "depression",
+  "name": "Depression",
+  "description": "Persistent feelings of sadness, hopelessness, or loss of interest in activities that can affect thinking, behavior, and physical well-being.",
+  "immediateActions": [
+    {
+      "id": "dep-ba-01",
+      "title": "Behavioural Activation: One Small Step",
+      "durationMinutes": 5,
+      "type": "behavioural-activation",
+      "instructions": [
+        "Think of one very small activity you used to enjoy or that usually gives you a sense of achievement",
+        "It could be: making a cup of tea, opening a window, stretching, putting on music, texting a friend",
+        "Write this activity down in one sentence",
+        "Rate your current mood before starting from 1 to 10",
+        "Complete the activity right now without judging the experience",
+        "Afterwards, rate your mood again and note even the smallest shift"
+      ]
+    },
+    {
+      "id": "dep-small-01",
+      "title": "Micro-Action Prompt Sequence",
+      "durationMinutes": 3,
+      "type": "small-activity",
+      "instructions": [
+        "Sit up or stand up from your current position",
+        "Take 3 slow breaths: inhale for 4 counts, exhale for 6 counts",
+        "Reach both arms overhead and stretch for 5 seconds",
+        "Look around and name 3 things that have a colour you like",
+        "Drink a glass of water if one is available",
+        "Tell yourself: I am taking one moment at a time"
+      ]
+    },
+    {
+      "id": "dep-mood-01",
+      "title": "Mood Booster: Sensory Pleasures",
+      "durationMinutes": 8,
+      "type": "mood-booster",
+      "instructions": [
+        "Choose one sense to focus on: touch, taste, smell, sound, or sight",
+        "For touch: wrap yourself in a soft blanket, hold something warm, or run your hands under warm water",
+        "For taste: eat a piece of fruit or your favourite snack slowly, noticing each flavour",
+        "For smell: light a candle, open a jar of herbs, or step outside for fresh air",
+        "For sound: play a favourite song and listen to it all the way through without multitasking",
+        "For sight: look at photos of people or places you care about, or watch the sky for 2 minutes"
+      ]
+    },
+    {
+      "id": "dep-thought-01",
+      "title": "Self-Compassion Letter",
+      "durationMinutes": 10,
+      "type": "thought",
+      "instructions": [
+        "Imagine a dear friend is feeling exactly what you are feeling right now",
+        "Write a short letter to that friend with kindness and understanding",
+        "Tell them they are not alone, their feelings are valid, and you care about them",
+        "Read the letter out loud to yourself",
+        "Place your hand on your heart or give yourself a gentle hug",
+        "Take a moment to accept the compassion you just offered"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-dep-ba",
+      "name": "Activity Scheduler",
+      "description": "Plan and track small, meaningful activities with gentle reminders and mood logging before/after.",
+      "type": "activity-scheduler"
+    },
+    {
+      "id": "tool-dep-mood",
+      "name": "Mood Trend Tracker",
+      "description": "Visual tool to track mood patterns over time and identify triggers and improvements.",
+      "type": "mood-tracker"
+    },
+    {
+      "id": "tool-dep-joy",
+      "name": "Joy Collection Jar",
+      "description": "Save tiny moments of goodness or achievement to review on harder days.",
+      "type": "gratitude-journal"
+    },
+    {
+      "id": "tool-dep-cbt",
+      "name": "Thought Pattern Worksheets",
+      "description": "CBT-based worksheets to identify and gently challenge unhelpful thinking patterns.",
+      "type": "cbt-worksheet"
+    },
+    {
+      "id": "tool-dep-care",
+      "name": "Self-Care Menu",
+      "description": "Personalised menu of low-energy, medium-energy, and high-energy self-care activities.",
+      "type": "resource-library"
+    }
+  ],
+  "recommendedSounds": [
+    "Piano",
+    "Rain",
+    "Forest"
+  ],
+  "safetyGuidance": "Depression is a real health condition, not a personal failure, and recovery is absolutely possible with the right support. If you are experiencing persistent low mood, please reach out to a mental health professional or your doctor. If you have thoughts of harming yourself, please contact your local crisis line or emergency services right away. You deserve care and there is help available."
+}

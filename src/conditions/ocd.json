@@ -1,0 +1,101 @@
+{
+  "conditionId": "ocd",
+  "name": "OCD Support",
+  "description": "Support for navigating intrusive thoughts, compulsive behaviours, and the anxiety cycles associated with obsessive-compulsive patterns.",
+  "immediateActions": [
+    {
+      "id": "ocd-aware-01",
+      "title": "Intrusive Thought Awareness Check",
+      "durationMinutes": 5,
+      "type": "thought-awareness",
+      "instructions": [
+        "When an intrusive thought arrives, pause and mentally label it: This is an OCD thought",
+        "Say silently: This thought is not a fact, it is a signal from my brain that I can observe without acting on",
+        "Rate your current anxiety from 0 to 10 and note it",
+        "Remind yourself: Having a thought does not mean I want it, agree with it, or will act on it",
+        "Continue with whatever you were doing, allowing the thought to be there without pushing it away",
+        "After 5 minutes, re-rate your anxiety and notice any change"
+      ]
+    },
+    {
+      "id": "ocd-cope-01",
+      "title": "Urge Surfing Coping Technique",
+      "durationMinutes": 10,
+      "type": "coping-strategy",
+      "instructions": [
+        "When you feel the urge to perform a compulsion, pause instead of acting immediately",
+        "Notice where in your body you feel the urge: tightness, restlessness, warmth, tension",
+        "Imagine the urge is a wave that will rise, peak, and then fall on its own",
+        "Take slow breaths: in for 4, hold for 2, out for 6",
+        "Keep your attention on your breath and the physical sensation without fighting it",
+        "Stay with the wave until it passes; most urges peak within 10-15 minutes"
+      ]
+    },
+    {
+      "id": "ocd-ritual-01",
+      "title": "Ritual Delay and Awareness Log",
+      "durationMinutes": 7,
+      "type": "ritual-awareness",
+      "instructions": [
+        "When you notice you are about to perform a ritual or compulsion, pause for 10 seconds",
+        "Write down: What thought triggered this? What feeling am I trying to reduce?",
+        "See if you can delay the ritual by 2 minutes; set a timer and wait",
+        "During the delay, breathe slowly and notice the discomfort without judging it",
+        "After 2 minutes, decide mindfully: will I proceed, or can I wait another minute?",
+        "Whether you delayed or not, note what happened afterwards in your log"
+      ]
+    },
+    {
+      "id": "ocd-edu-01",
+      "title": "Understanding OCD Cycle: Break It Down",
+      "durationMinutes": 10,
+      "type": "educational",
+      "instructions": [
+        "Write the trigger that started this cycle: a thought, image, feeling, or situation",
+        "Write the obsession (the intrusive thought or doubt that followed)",
+        "Write the anxiety or discomfort you felt next and its intensity 0-10",
+        "Write the compulsion or avoidance behaviour you used to try to feel better",
+        "Write how you felt immediately after: relief, shame, doubt, urge to repeat?",
+        "Recognise the cycle and remind yourself: the compulsion strengthens the obsession over time; I can choose to respond differently"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-ocd-log",
+      "name": "Cycle Tracker Log",
+      "description": "Structured log to map triggers, obsessions, compulsions, and anxiety levels over time.",
+      "type": "tracking-log"
+    },
+    {
+      "id": "tool-ocd-surf",
+      "name": "Urge Surf Timer",
+      "description": "Visual timer with guided breathing to help ride out urges with anxiety level re-rating.",
+      "type": "urge-timer"
+    },
+    {
+      "id": "tool-ocd-script",
+      "name": "Self-Talk Scripts",
+      "description": "Collection of evidence-based scripts to say aloud or silently when intrusive thoughts strike.",
+      "type": "coping-scripts"
+    },
+    {
+      "id": "tool-ocd-exposure",
+      "name": "Graded Challenge Builder",
+      "description": "Tool to create personalised exposure hierarchies with progress tracking.",
+      "type": "erp-planner"
+    },
+    {
+      "id": "tool-ocd-mindful",
+      "name": "Mindful Acceptance Audio",
+      "description": "Guided audio exercises to practice accepting thoughts without fusion or judgement.",
+      "type": "guided-audio"
+    }
+  ],
+  "recommendedSounds": [
+    "Brown noise",
+    "River",
+    "Ambient music"
+  ],
+  "safetyGuidance": "OCD is a treatable medical condition, and therapies such as ERP (Exposure and Response Prevention) are highly effective. If you are struggling with OCD patterns, please consider reaching out to a mental health professional who has training in OCD and ERP treatment. You are not your thoughts, and there is skilled help available to support your recovery."
+}

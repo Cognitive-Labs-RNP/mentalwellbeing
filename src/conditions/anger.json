@@ -1,0 +1,101 @@
+{
+  "conditionId": "anger",
+  "name": "Anger Regulation",
+  "description": "Support for understanding, expressing, and regulating anger in healthy and constructive ways.",
+  "immediateActions": [
+    {
+      "id": "ang-cool-01",
+      "title": "60-Second Cool Down",
+      "durationMinutes": 2,
+      "type": "calming",
+      "instructions": [
+        "As soon as you notice anger rising, say silently to yourself: I am feeling angry and I have space to choose my response",
+        "Step back physically if possible: take one step away or turn slightly",
+        "Take a fast, deep inhale through the nose for 2 counts, then exhale slowly through pursed lips for 6 counts",
+        "Repeat the breath pattern 3 more times",
+        "Ask yourself: On a scale of 1-10, how hot is my anger right now? Name it aloud if safe",
+        "Ask: What do I actually need right now? Space? A drink? To say nothing for 2 minutes?"
+      ]
+    },
+    {
+      "id": "ang-release-01",
+      "title": "Physical Release Sequence",
+      "durationMinutes": 5,
+      "type": "physical-release",
+      "instructions": [
+        "Go somewhere private if possible",
+        "Clench your fists as tightly as you can for 5 full seconds, then release completely and shake out your hands",
+        "Tense all the muscles in your face, hold for 5, then release and sigh out loud",
+        "Push both hands against a wall as hard as you safely can for 5 seconds, then release",
+        "March or jog in place vigorously for 30 seconds, then stop and stand still",
+        "Take 3 slow breaths in and out and notice the shift in energy"
+      ]
+    },
+    {
+      "id": "ang-label-01",
+      "title": "Anger Unpacking: What Is Underneath?",
+      "durationMinutes": 7,
+      "type": "thought",
+      "instructions": [
+        "Write the event that triggered your anger in one or two sentences",
+        "Rate the anger from 1 to 10",
+        "Ask: Under the anger, am I also feeling hurt? Unheard? Disappointed? Afraid? Overwhelmed? Disrespected?",
+        "Circle any secondary feelings that are also present",
+        "Ask: What is it that I wanted or needed in this situation that I did not get?",
+        "Write down one thing you want to say or do next, and one thing you want to avoid saying or doing"
+      ]
+    },
+    {
+      "id": "ang-communicate-01",
+      "title": "Constructive Expression Prompt",
+      "durationMinutes": 6,
+      "type": "communication",
+      "instructions": [
+        "Decide what the actual issue is, separate from the person involved",
+        "Write one sentence using the I-statement format: I feel [emotion] when [specific situation/action] because [effect on you]",
+        "Write down one specific request of what you would like instead, framed positively",
+        "Choose a good time to speak: not when either of you is hungry, tired, or still heated",
+        "Deliver your I-statement calmly and state your request clearly",
+        "Listen to the response without interrupting; you do not have to agree, just to hear"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-ang-pause",
+      "name": "Pause Button Prompt",
+      "description": "Discreet full-screen pause reminder with breathing animation for escalating moments.",
+      "type": "coping-alert"
+    },
+    {
+      "id": "tool-ang-log",
+      "name": "Anger Pattern Log",
+      "description": "Track anger triggers, intensity, bodily cues, and outcomes to spot patterns over time.",
+      "type": "pattern-log"
+    },
+    {
+      "id": "tool-ang-release",
+      "name": "Energy Release Guide",
+      "description": "Menu of safe physical outlets matched to how much energy and privacy you have.",
+      "type": "release-menu"
+    },
+    {
+      "id": "tool-ang-scripts",
+      "name": "I-Statement Builder",
+      "description": "Step-by-step builder to draft calm, clear I-statements and requests for difficult conversations.",
+      "type": "communication-tool"
+    },
+    {
+      "id": "tool-ang-calm",
+      "name": "Cool-Down Audio",
+      "description": "Guided audio that walks you through a calm-down sequence in real time.",
+      "type": "guided-audio"
+    }
+  ],
+  "recommendedSounds": [
+    "Drums",
+    "Thunderstorm",
+    "Nature ambience"
+  ],
+  "safetyGuidance": "Anger is a natural human emotion that signals something matters to us; the goal is not to eliminate it, but to express it in ways that do not harm yourself or others. If anger feels out of control, frequent, or is damaging your relationships, consider working with a therapist who can help you develop personalised regulation skills. Everyone deserves support in this area."
+}

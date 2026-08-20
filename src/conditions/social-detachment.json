@@ -1,0 +1,86 @@
+{
+  "conditionId": "social-detachment",
+  "name": "Social Detachment",
+  "description": "A pattern of withdrawing from social connections, feeling disconnected from others, or preferring isolation that may feel protective but can lead to loneliness and reduced wellbeing over time.",
+  "immediateActions": [
+    {
+      "id": "sd-microconnect-01",
+      "title": "Micro-Connection Challenge",
+      "durationMinutes": 5,
+      "type": "micro-connection",
+      "instructions": [
+        "Choose ONE tiny social action you can take today that feels doable — nothing big",
+        "Options: Text a friend one sentence, comment on a post, say 'good morning' to a neighbour, pet a stranger's dog, make eye contact and smile at a barista",
+        "Write the action down and commit to doing it within the next 2 hours",
+        "After you do it, notice: What happened? How did it feel? Was it as hard as you expected?",
+        "Rate your mood before and after, even if it's only a 1-point shift"
+      ]
+    },
+    {
+      "id": "sd-values-01",
+      "title": "Why Connection Check",
+      "durationMinutes": 8,
+      "type": "reflection",
+      "instructions": [
+        "Write: What am I protecting myself from by staying disconnected?",
+        "Write: What did I used to enjoy about being with people (even specific people)?",
+        "Write: What is one small thing I miss about connection?",
+        "Write: Who is one person in my life I feel even slightly safe around?",
+        "Write one tiny next step I could take with that person: a message, a walk invitation, a reaction emoji reply",
+        "Put that next step in your calendar for tomorrow"
+      ]
+    },
+    {
+      "id": "sd-lowstakes-01",
+      "title": "Low-Stakes Social Warm-Up",
+      "durationMinutes": 6,
+      "type": "exposure",
+      "instructions": [
+        "Choose a very low-pressure social setting: park bench, café, library, community garden",
+        "Go there for 10 minutes without your phone — just observe people",
+        "No pressure to interact, just notice human presence around you",
+        "Notice 3 people and silently wish them well (silent metta: May you be well, may you be at peace)",
+        "If comfortable, make one tiny friendly gesture: smile, hold a door, say thank you to someone",
+        "Leave whenever you want — there is no minimum except showing up"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-sd-circle",
+      "name": "Connection Circle Map",
+      "description": "Map your social circles and identify which connections nourish vs drain you.",
+      "type": "circle-mapper"
+    },
+    {
+      "id": "tool-sd-scripts",
+      "name": "Social Scripts Library",
+      "description": "Ready-to-use gentle scripts for texting, inviting, saying hello, and declining with kindness.",
+      "type": "scripts-library"
+    },
+    {
+      "id": "tool-sd-ladder",
+      "name": "Social Exposure Ladder",
+      "description": "Build your own graded exposure ladder from easiest to hardest social interactions.",
+      "type": "exposure-ladder"
+    },
+    {
+      "id": "tool-sd-qualitative",
+      "name": "Quality vs Quantity Tracker",
+      "description": "Track not how many interactions but how nourished you felt by them.",
+      "type": "quality-tracker"
+    },
+    {
+      "id": "tool-sd-rewild",
+      "name": "Rewilding Social Self",
+      "description": "Guided reflections to rediscover what kind of social being you want to be.",
+      "type": "guided-journal"
+    }
+  ],
+  "recommendedSounds": [
+    "Café ambience",
+    "Birdsong",
+    "Soft piano"
+  ],
+  "safetyGuidance": "Social detachment often starts as a protective strategy and that is okay — your system may have learned to rely on it for good reasons. If detachment is causing you distress or loneliness, gentle and gradual reconnection at your own pace is possible. If feelings of isolation are persistent or accompanied by hopelessness, please consider speaking with a therapist who can help you reconnect safely with yourself and others. You are not alone in feeling disconnected; many people travel this road and find their way back to meaningful connection."
+}

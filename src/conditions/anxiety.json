@@ -1,0 +1,102 @@
+{
+  "conditionId": "anxiety",
+  "name": "Anxiety",
+  "description": "Feelings of worry, nervousness, or unease that may be accompanied by physical sensations such as restlessness, tension, and increased heart rate.",
+  "immediateActions": [
+    {
+      "id": "anx-breath-01",
+      "title": "4-7-8 Breathing Exercise",
+      "durationMinutes": 5,
+      "type": "breathing",
+      "instructions": [
+        "Sit comfortably with your back straight",
+        "Exhale completely through your mouth, making a whoosh sound",
+        "Close your mouth and inhale quietly through your nose to a mental count of 4",
+        "Hold your breath for a count of 7",
+        "Exhale completely through your mouth, making a whoosh sound to a count of 8",
+        "Repeat this cycle 4 times"
+      ]
+    },
+    {
+      "id": "anx-ground-01",
+      "title": "5-4-3-2-1 Grounding Technique",
+      "durationMinutes": 5,
+      "type": "grounding",
+      "instructions": [
+        "Take a slow, deep breath",
+        "Name 5 things you can see around you",
+        "Name 4 things you can physically feel (your feet on floor, clothes on skin)",
+        "Name 3 things you can hear right now",
+        "Name 2 things you can smell",
+        "Name 1 thing you can taste",
+        "Take another deep breath and notice how you feel"
+      ]
+    },
+    {
+      "id": "anx-relax-01",
+      "title": "Progressive Muscle Relaxation",
+      "durationMinutes": 10,
+      "type": "relaxation",
+      "instructions": [
+        "Find a comfortable position, lying down or sitting",
+        "Take 3 slow, deep breaths to begin",
+        "Starting with your toes: tense the muscles tightly for 5 seconds, then release for 10 seconds",
+        "Move up to your feet, calves, thighs, abdomen, chest, hands, arms, shoulders, neck, and face",
+        "For each group, tense for 5, release for 10",
+        "After completing all groups, take 2 minutes to notice the feeling of relaxation throughout your body"
+      ]
+    },
+    {
+      "id": "anx-thought-01",
+      "title": "Worry Thought Reframing",
+      "durationMinutes": 7,
+      "type": "thought",
+      "instructions": [
+        "Write down the specific worry thought that is on your mind",
+        "Ask yourself: What is the evidence this thought is true?",
+        "Ask yourself: What is the evidence this thought is NOT true?",
+        "What is the worst that could happen? Could I handle that?",
+        "What is a more balanced way to look at this situation?",
+        "Write down one small action you can take right now if appropriate"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-anx-breath",
+      "name": "Breath Timer",
+      "description": "Visual and audio guide for paced breathing patterns including box breathing and 4-7-8 technique.",
+      "type": "breathing-timer"
+    },
+    {
+      "id": "tool-anx-ground",
+      "name": "Grounding Card Deck",
+      "description": "Interactive cards with prompts and sensory exercises to anchor you in the present moment.",
+      "type": "grounding-prompts"
+    },
+    {
+      "id": "tool-anx-worry",
+      "name": "Worry Journal",
+      "description": "Structured journal template to capture worries, challenge them, and track patterns over time.",
+      "type": "journal"
+    },
+    {
+      "id": "tool-anx-body",
+      "name": "Body Scan Guide",
+      "description": "Step-by-step guided body scan to release physical tension associated with anxiety.",
+      "type": "guided-audio"
+    },
+    {
+      "id": "tool-anx-scripts",
+      "name": "Calming Scripts Library",
+      "description": "Collection of short, evidence-based scripts for rapid anxiety reduction in various situations.",
+      "type": "coping-scripts"
+    }
+  ],
+  "recommendedSounds": [
+    "Ocean",
+    "Rain",
+    "Brown noise"
+  ],
+  "safetyGuidance": "Anxiety is a common and treatable experience. If your anxiety feels overwhelming, persistent, or is interfering with daily life, consider reaching out to a mental health professional or your primary care provider. If you ever feel like you cannot keep yourself safe, please contact your local crisis line or emergency services immediately. You are not alone in this."
+}

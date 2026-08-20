@@ -1,0 +1,101 @@
+{
+  "conditionId": "stress",
+  "name": "Stress Management",
+  "description": "Support for managing acute and chronic stress, balancing demands, and restoring a sense of calm and control.",
+  "immediateActions": [
+    {
+      "id": "str-box-01",
+      "title": "Box Breathing Reset",
+      "durationMinutes": 5,
+      "type": "breathing",
+      "instructions": [
+        "Sit upright and place both feet flat on the floor",
+        "Exhale all the air out of your lungs slowly",
+        "Inhale through your nose for 4 slow counts",
+        "Hold your breath comfortably for 4 counts",
+        "Exhale through your mouth for 4 counts",
+        "Hold for 4 counts with empty lungs; repeat the box 5 times"
+      ]
+    },
+    {
+      "id": "str-stretch-01",
+      "title": "Desk Release Stretch Sequence",
+      "durationMinutes": 6,
+      "type": "relaxation",
+      "instructions": [
+        "Stand up, feet hip-width apart, and roll your shoulders back 5 times then forward 5 times",
+        "Clasp hands behind your back, straighten arms, and lift gently away from your body for 3 deep breaths",
+        "Slowly tilt your head to the left, hold 3 breaths, then to the right, hold 3 breaths",
+        "Interlace fingers, turn palms up, and stretch arms overhead, leaning slightly left then right",
+        "Fold forward gently from the hips, letting arms hang heavy, and take 5 slow breaths",
+        "Roll up slowly one vertebra at a time and notice how your body feels"
+      ]
+    },
+    {
+      "id": "str-reset-01",
+      "title": "5-Minute Sensory Reset",
+      "durationMinutes": 5,
+      "type": "grounding",
+      "instructions": [
+        "Close your eyes and take 3 deep centering breaths",
+        "Wash your hands with cool water and notice the temperature on your skin",
+        "Wrap both hands around a cold glass of water and hold it for 30 seconds",
+        "Open your eyes and slowly look around the room, noticing objects you have not paid attention to before",
+        "Eat one piece of food (fruit, chocolate, nut) as slowly as you can, chewing thoroughly and noticing flavour",
+        "Put your hand on your heart and take 3 more breaths before returning to your day"
+      ]
+    },
+    {
+      "id": "str-prioritise-01",
+      "title": "Stress Deconstruction List",
+      "durationMinutes": 8,
+      "type": "thought",
+      "instructions": [
+        "Write down everything that currently feels stressful or overwhelming, one item per line",
+        "Read through your list and place a star next to items with a deadline within the next 24 hours",
+        "Place a circle next to items that are truly within your control right now",
+        "For starred+circled items, write ONE tiny next action you can take in the next 2 hours",
+        "For items you circled without a star, schedule one 15-minute slot later this week to address them",
+        "For items you cannot control, cross them off the list and say aloud: I release what I cannot change"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-str-breath",
+      "name": "Breath Rhythm Guide",
+      "description": "Animated visual guide for multiple breathing patterns with adjustable pace.",
+      "type": "breathing-timer"
+    },
+    {
+      "id": "tool-str-list",
+      "name": "Brain Dump Tool",
+      "description": "Quick-capture brain dump template to offload worries and then organise or discard them.",
+      "type": "journal"
+    },
+    {
+      "id": "tool-str-timeout",
+      "name": "Timeout Reminder",
+      "description": "Gentle reminder to take short breaks, stretch, and hydrate on a custom schedule.",
+      "type": "reminder"
+    },
+    {
+      "id": "tool-str-boundary",
+      "name": "Boundary Builder",
+      "description": "Scripts and templates for setting kind but firm boundaries around time and energy.",
+      "type": "resource-library"
+    },
+    {
+      "id": "tool-str-relax",
+      "name": "Progressive Relaxation Audio",
+      "description": "Full-body relaxation audio guide to release accumulated stress and tension.",
+      "type": "guided-audio"
+    }
+  ],
+  "recommendedSounds": [
+    "Forest",
+    "Rain",
+    "Ambient music"
+  ],
+  "safetyGuidance": "Stress is a normal part of life, but when it becomes constant or overwhelming it can affect your health and wellbeing. If stress is interfering with your sleep, relationships, work, or ability to enjoy life, consider speaking with a healthcare provider or a counsellor. Taking steps to manage stress early is an act of care for yourself that makes a real difference."
+}
