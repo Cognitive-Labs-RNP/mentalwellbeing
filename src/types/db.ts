@@ -96,6 +96,12 @@ export interface FeedbackRow {
   after_mood: number | null;
   before_stress: number | null;
   after_stress: number | null;
+  before_intensity: number | null;
+  after_intensity: number | null;
+  improvement: number | null;
+  status: string | null;
+  current_feeling: string | null;
+  related_activity: string | null;
   feedback_text: string | null;
   created_at: string;
 }

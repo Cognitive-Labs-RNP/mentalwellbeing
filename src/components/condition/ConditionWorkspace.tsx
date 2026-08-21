@@ -13,6 +13,7 @@ import { getConditionConfig } from '@/conditions';
 import { getSoundsForCondition } from '@/data/sounds';
 import { useAppStore } from '@/store';
 import { markConditionActivityComplete } from '@/services/conditionService';
+import { saveCalmSessionRecord } from '@/services/toolService';
 import type { ConditionSolution } from '@/types';
 
 interface ConditionWorkspaceProps {
@@ -256,7 +257,23 @@ export function ConditionWorkspace({ conditionIdProp }: ConditionWorkspaceProps)
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {recommendedSounds.map((sound) => (
-            <AudioPlayer key={sound.id} sound={sound} defaultDuration={10} />
+            <AudioPlayer
+              key={sound.id}
+              sound={sound}
+              defaultDuration={10}
+              onSessionEnd={(info) => {
+                if (session?.userId) {
+                  const durationMins = Number((info.elapsedSeconds / 60).toFixed(1));
+                  saveCalmSessionRecord(
+                    session.userId,
+                    sound.id,
+                    sound.name,
+                    durationMins,
+                    info.completed
+                  );
+                }
+              }}
+            />
           ))}
         </div>
       </section>

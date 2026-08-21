@@ -16,6 +16,18 @@
  */
 
 // ---------------------------------------------------------------------------
+// Ambient Deno declaration for IDE TypeScript language server compatibility
+// ---------------------------------------------------------------------------
+
+declare namespace Deno {
+  interface Env {
+    get(key: string): string | undefined;
+  }
+  const env: Env;
+  function serve(handler: (req: Request) => Promise<Response> | Response): void;
+}
+
+// ---------------------------------------------------------------------------
 // Types (inlined to keep the Edge Function self-contained)
 // ---------------------------------------------------------------------------
 
@@ -242,7 +254,7 @@ async function callGroq(
   const url = 'https://api.groq.com/openai/v1/chat/completions';
 
   const body = {
-    model: 'groq/compound-mini',
+    model: 'llama-3.3-70b-versatile',
     messages: [
       {
         role: 'system',

@@ -66,11 +66,17 @@ const mockImmediateActions = [
   },
 ]
 
+import { useAppStore } from '@/store'
+import { markConditionActivityComplete } from '@/services/conditionService'
+import { saveJournalFeedback } from '@/services/journalService'
+import type { FeedbackPayload } from '@/components/ui/FeedbackForm'
+
 const safetyGuidance =
   'This condition is a common and treatable experience. If these feelings feel overwhelming, persistent, or are interfering with daily life, consider reaching out to a mental health professional or your primary care provider. If you ever feel like you cannot keep yourself safe, please contact your local crisis line or emergency services immediately. You are not alone in this.'
 
 export default function ConditionImmediateSupport() {
   const { conditionId } = useParams()
+  const session = useAppStore((s) => s.session)
   const [completedIds, setCompletedIds] = useState<Set<string>>(new Set())
   const [startedIds, setStartedIds] = useState<Set<string>>(new Set())
   const [showFeedback, setShowFeedback] = useState(false)
@@ -84,10 +90,30 @@ export default function ConditionImmediateSupport() {
 
   const handleComplete = (id: string) => {
     setCompletedIds((prev) => new Set(prev).add(id))
+    const activity = mockImmediateActions.find((a) => a.id === id)
+    if (activity) {
+      markConditionActivityComplete(
+        session?.userId,
+        conditionId ?? 'anxiety',
+        activity.id,
+        activity.title,
+        activity.durationMinutes
+      )
+    }
   }
 
-  const handleFeedbackSubmit = () => {
+  const handleFeedbackSubmit = (data?: FeedbackPayload) => {
     setFeedbackSubmitted(true)
+    if (session?.userId && data) {
+      saveJournalFeedback(session.userId, {
+        beforeIntensity: Math.round((data.moodBefore + (10 - data.stressBefore)) / 2),
+        afterIntensity: Math.round((data.moodAfter + (10 - data.stressAfter)) / 2),
+        currentFeeling: data.moodAfter >= 8 ? '😄' : data.moodAfter >= 6 ? '🙂' : data.moodAfter >= 4 ? '😐' : '😕',
+        comment: data.note,
+        relatedCondition: conditionId ?? 'anxiety',
+        relatedActivity: 'Immediate Support Session',
+      })
+    }
   }
 
   return (

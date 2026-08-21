@@ -17,7 +17,7 @@ const navLinks = [
   { id: 'home', to: '/', label: 'Home', icon: Home },
   { id: 'analysis', to: '/analysis', label: 'Analysis', icon: Search },
   { id: 'tools', to: '/tools', label: 'Tools', icon: Wrench },
-  { id: 'journal', to: '/journal', label: 'Journal', icon: BookOpen },
+  { id: 'journal', to: '/journal', label: 'Journal & Journey', icon: BookOpen },
   { id: 'insights', to: '/insights', label: 'Insights', icon: LineChart },
 ];
 
