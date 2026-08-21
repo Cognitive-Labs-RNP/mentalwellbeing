@@ -1,88 +1,67 @@
 {
   "conditionId": "burnout",
   "name": "Burnout",
-  "description": "A state of emotional, physical, and mental exhaustion caused by excessive and prolonged stress, often related to work or caregiving responsibilities.",
-  "immediateActions": [
+  "description": "Pattern related to chronic stress fatigue, energy depletion, and feeling emotionally drained.",
+  "taskBreakerEnabled": false,
+  "recommendedSoundIds": ["rain", "ocean", "forest"],
+  "safetyGuidance": "This is not a clinical diagnosis. Pattern match based on sustained stress and energy depletion.",
+  "solutions": [
     {
-      "id": "brn-pause-01",
-      "title": "5-Minute Complete Stop",
-      "durationMinutes": 5,
-      "type": "rest",
+      "id": "burn-sol-1",
+      "title": "Guided Breathing",
+      "purpose": "Provide restorative deep breathing.",
+      "type": "breathing",
+      "durationSeconds": 300,
+      "recommendedSoundId": "rain",
       "instructions": [
-        "Close all tabs, notifications, and distractions around you",
-        "Set a timer for 5 minutes",
-        "Sit or lie down in the most comfortable position available",
-        "Close your eyes or soften your gaze",
-        "Do nothing productive: no thinking, no planning, no problem-solving",
-        "If thoughts come, gently notice them and let them pass like clouds",
-        "Breathe naturally without trying to control it"
+        "Lie back or lean back in a comfortable chair.",
+        "Inhale deeply expanding your abdomen for 4 seconds.",
+        "Exhale slowly letting all muscular tension go for 6 seconds.",
+        "Repeat gently for 5 minutes."
       ]
     },
     {
-      "id": "brn-boundary-01",
-      "title": "Quick Boundary Setting",
-      "durationMinutes": 7,
-      "type": "boundary",
+      "id": "burn-sol-2",
+      "title": "Short Meditation",
+      "purpose": "Provide a short settling practice.",
+      "type": "meditation",
+      "durationSeconds": 300,
+      "recommendedSoundId": "ocean",
       "instructions": [
-        "Write down the top 3 things draining your energy right now",
-        "For each one, ask: Is this actually my responsibility?",
-        "Identify one thing you can say 'no' to or delegate today",
-        "Draft a short, polite refusal or hand-off message",
-        "Identify one non-negotiable rest break you will take tomorrow",
-        "Schedule it in your calendar as if it were a meeting"
+        "Close your eyes and release any goal or expectation.",
+        "Allow your body to rest completely.",
+        "Remember that rest is an essential necessity, not something to earn."
       ]
     },
     {
-      "id": "brn-sensory-01",
-      "title": "Sensory Reset Sequence",
-      "durationMinutes": 4,
-      "type": "sensory",
+      "id": "burn-sol-3",
+      "title": "Rest / Reset Activity",
+      "purpose": "Encourage an intentional short break.",
+      "type": "reflection",
+      "durationSeconds": 600,
       "instructions": [
-        "Splash cold water on your face or hold a cold object",
-        "Step outside or stand by an open window for 60 seconds of fresh air",
-        "Stretch your neck slowly: left, right, forward, back",
-        "Roll your shoulders backward 5 times, then forward 5 times",
-        "Give yourself a gentle hand massage for 30 seconds per hand",
-        "Take 3 sighing breaths: inhale, then exhale audibly"
+        "Step completely away from work, screens, and responsibilities for 10 minutes.",
+        "Sip a warm drink, look out a window, or close your eyes.",
+        "Do not consume media or process tasks during this window."
       ]
+    },
+    {
+      "id": "burn-sol-4",
+      "title": "Gentle Movement / Walk",
+      "purpose": "Encourage a manageable movement break.",
+      "type": "movement",
+      "durationSeconds": 600,
+      "instructions": [
+        "Take a slow 10-minute stretch or light stroll.",
+        "Move without urgency or fitness goals.",
+        "Focus on releasing physical stiffness in your spine and neck."
+      ]
+    },
+    {
+      "id": "burn-sol-5",
+      "title": "Daily Load Prioritization",
+      "purpose": "Help the user identify essential tasks and avoid attempting to complete everything simultaneously.",
+      "type": "task-prioritization"
     }
-  ],
-  "tools": [
-    {
-      "id": "tool-brn-boundary",
-      "name": "Boundary Builder",
-      "description": "Templates and scripts for setting kind, clear boundaries at work and in relationships.",
-      "type": "boundary-tool"
-    },
-    {
-      "id": "tool-brn-energy",
-      "name": "Energy Audit",
-      "description": "Map your energy drainers and replenishers to design a sustainable weekly rhythm.",
-      "type": "energy-tracker"
-    },
-    {
-      "id": "tool-brn-microrest",
-      "name": "Micro-Rest Library",
-      "description": "A menu of 30-second to 5-minute rest practices for every context and energy level.",
-      "type": "rest-library"
-    },
-    {
-      "id": "tool-brn-values",
-      "name": "Values Realignment Check",
-      "description": "Reflect on what matters most and identify small steps back toward meaningful activity.",
-      "type": "values-exercise"
-    },
-    {
-      "id": "tool-brn-recovery",
-      "name": "Recovery Plan Builder",
-      "description": "Create a personalised phased recovery plan from burnout with gentle milestones.",
-      "type": "recovery-plan"
-    }
-  ],
-  "recommendedSoundIds": ["forest", "rain", "ambient"],
-  "timerConfig": {
-    "defaultDurationMinutes": 5,
-    "options": [4, 5, 7, 10]
-  },
-  "safetyGuidance": "Burnout is a signal that your system has been carrying too much for too long, and recovery is absolutely possible with intentional rest and boundary-setting. If burnout is severe, persistent, or accompanied by thoughts of hopelessness, please speak with a mental health professional or your doctor. You do not have to earn rest; you deserve it simply because you are human."
+  ]
 }

@@ -1,87 +1,61 @@
 {
   "conditionId": "self-esteem",
-  "name": "Self-Esteem Issues",
-  "description": "Persistent patterns of low self-worth, self-criticism, imposter syndrome, or difficulty recognising your own value that can hold you back from taking risks, setting boundaries, and living fully.",
-  "immediateActions": [
+  "name": "Self-Esteem",
+  "description": "Pattern related to self-doubt, harsh inner critique, or low self-worth.",
+  "taskBreakerEnabled": false,
+  "recommendedSoundIds": ["ocean", "forest", "ambient"],
+  "safetyGuidance": "This is not a clinical diagnosis. Informational pattern match based on self-evaluation statements.",
+  "solutions": [
     {
-      "id": "se-critic-01",
-      "title": "Catch the Critic & Rewrite",
-      "durationMinutes": 7,
-      "type": "cognitive",
+      "id": "se-sol-1",
+      "title": "Self-Compassion Exercise",
+      "purpose": "Guide the user through a short self-compassion activity.",
+      "type": "reflection",
+      "durationSeconds": 300,
+      "recommendedSoundId": "ambient",
       "instructions": [
-        "Write down the exact self-critical thought that's loudest right now",
-        "Now write: WHO does this voice sound like? A parent? Teacher? Former bully? Your own voice?",
-        "Ask: Would I say this exact sentence to a friend I love? The answer is almost always NO",
-        "Rewrite the thought as what you WOULD say to that friend — be generous and warm",
-        "Write the kind version 3 times out loud or in your head",
-        "Place your hand on your heart for 15 seconds and take 3 breaths, breathing in the kind version"
+        "Place your hand gently over your heart.",
+        "Acknowledge: 'This is a moment of struggle, and struggle is part of being human.'",
+        "Offer yourself the same words of encouragement you would give a beloved friend.",
+        "Breathe warmly as you hold yourself with kindness."
       ]
     },
     {
-      "id": "se-wins-01",
-      "title": "3 Wins (Even Tiny)",
-      "durationMinutes": 4,
-      "type": "evidence-gathering",
+      "id": "se-sol-2",
+      "title": "Positive Self-Reflection",
+      "purpose": "Help the user identify positive qualities or experiences.",
+      "type": "reflection",
+      "durationSeconds": 300,
       "instructions": [
-        "Set a timer for 2 minutes",
-        "Write down 3 wins, achievements, or moments you handled well — they can be micro",
-        "Examples: I got out of bed today, I drank water, I responded to that message, I was kind to someone",
-        "For each win, write one sentence about why it counts and one about what it shows about you",
-        "Example: I tried today shows I am persistent even when it's hard",
-        "Read all three out loud and pause for 5 seconds on each, letting it land"
+        "Recall one obstacle or difficulty you have handled in the past.",
+        "Notice the strength, patience, or effort you showed.",
+        "Write down or mentally hold 3 qualities you value about yourself."
       ]
     },
     {
-      "id": "se-compassletter-01",
-      "title": "Self-Compassion Break (3 Phrases)",
-      "durationMinutes": 4,
-      "type": "self-compassion",
+      "id": "se-sol-3",
+      "title": "Strengths Checklist",
+      "purpose": "Allow the user to record strengths and positive qualities.",
+      "type": "strengths-checklist"
+    },
+    {
+      "id": "se-sol-4",
+      "title": "Guided Meditation",
+      "purpose": "Provide a short mindfulness practice for self-acceptance.",
+      "type": "meditation",
+      "durationSeconds": 300,
+      "recommendedSoundId": "ocean",
       "instructions": [
-        "Say out loud or silently: This is a moment of suffering.",
-        "Say: Suffering is part of life. I am not alone in this.",
-        "Say: May I be kind to myself.",
-        "Now say: May I give myself the compassion I need.",
-        "Place both hands over your heart and breathe warmth into that area for 30 seconds",
-        "Notice what shifts in your body after this — not fixing, just allowing"
+        "Rest in comfortable stillness.",
+        "Observe harsh inner critical voices without accepting them as facts.",
+        "Return focus gently to the calm rhythm of your breath."
       ]
+    },
+    {
+      "id": "se-sol-5",
+      "title": "Small-Achievement Activity",
+      "purpose": "Choose and complete one small achievable task.",
+      "type": "tiny-step"
     }
-  ],
-  "tools": [
-    {
-      "id": "tool-se-evidence",
-      "name": "Evidence Journal",
-      "description": "Gather concrete evidence that contradicts your inner critic — wins, kind acts, moments of growth.",
-      "type": "evidence-tool"
-    },
-    {
-      "id": "tool-se-letter",
-      "name": "Self-Compassion Letter Builder",
-      "description": "Guided letter templates for writing compassionate letters to yourself from different perspectives.",
-      "type": "letter-builder"
-    },
-    {
-      "id": "tool-se-critic",
-      "name": "Inner Critic Workbook",
-      "description": "Worksheets to identify critic patterns, origins, and create an inner ally alternative voice.",
-      "type": "critic-workbook"
-    },
-    {
-      "id": "tool-se-values",
-      "name": "Values & Strengths Card Sort",
-      "description": "Interactive card sort to discover your core values and character strengths you may be overlooking.",
-      "type": "strengths-finder"
-    },
-    {
-      "id": "tool-se-boundaries",
-      "name": "Boundaries as Self-Respect Builder",
-      "description": "Learn how to set small boundaries as acts of self-respect with scripts and practice prompts.",
-      "type": "boundary-selfrespect"
-    }
-  ],
-  "recommendedSoundIds": ["singing-bowl", "ambient", "birds"],
-  "timerConfig": {
-    "defaultDurationMinutes": 5,
-    "options": [4, 5, 7, 10]
-  },
-  "safetyGuidance": "Low self-esteem is usually learned, not the truth about you — it can be unlearned with intentional practice and often responds well to therapy approaches like CBT, ACT, and compassion-focused therapy. If persistent low self-worth is accompanied by self-critical thoughts of hopelessness, speaking with a therapist can help you reconnect to yourself the kindness you so freely give others. You are worthy of your own kindness, not the version of yourself; worthiness is not earned, it is your birthright."
+  ]
 }

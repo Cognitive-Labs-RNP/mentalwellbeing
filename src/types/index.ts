@@ -34,43 +34,36 @@ export interface Sound {
   recommendedFor: ConditionId[];
 }
 
-// ---------------------------------------------------------------------------
-// Condition configuration (mirrors the JSON files in src/conditions/)
-// ---------------------------------------------------------------------------
-
-export interface TimerConfig {
-  defaultDurationMinutes: number;
-  options: number[];
-}
-
-export interface ImmediateAction {
-  id: string;
-  title: string;
-  durationMinutes: number;
-  type: string;
-  instructions: string[];
-}
-
-export interface ToolItem {
-  id: string;
-  name: string;
-  description: string;
-  type: string;
-}
+export type SolutionType =
+  | 'breathing'
+  | 'grounding'
+  | 'meditation'
+  | 'mind-clearing'
+  | 'reflection'
+  | 'relaxation'
+  | 'thought-observation'
+  | 'task-breaker'
+  | 'focus-session'
+  | 'task-prioritization'
+  | 'movement'
+  | 'tiny-step'
+  | 'strengths-checklist'
+  | 'urge-delay'
+  | 'support-seeking'
+  | 'confidence-building'
+  | 'checklist';
 
 /**
- * Represents a single condition-specific solution/activity as stored
- * in the condition JSON. Combines immediate actions and tools into
- * a unified solution shape for the UI layer.
+ * Single condition-specific solution shape according to Phase 4 spec.
  */
 export interface ConditionSolution {
   id: string;
   title: string;
-  description: string;
-  durationMinutes: number;
-  type: string;
-  /** Step-by-step instructions, if applicable */
+  purpose: string;
+  type: SolutionType;
+  durationSeconds?: number;
   instructions?: string[];
+  recommendedSoundId?: string;
 }
 
 /** Full shape of a condition JSON file */
@@ -78,12 +71,10 @@ export interface ConditionConfig {
   conditionId: ConditionId;
   name: string;
   description: string;
-  immediateActions: ImmediateAction[];
-  tools: ToolItem[];
-  /** IDs referencing entries in the sound library (src/data/sounds.ts) */
+  taskBreakerEnabled: boolean;
   recommendedSoundIds: string[];
-  timerConfig: TimerConfig;
-  safetyGuidance: string;
+  solutions: ConditionSolution[];
+  safetyGuidance?: string;
 }
 
 // ---------------------------------------------------------------------------

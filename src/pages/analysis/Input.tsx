@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Mic,
@@ -6,10 +6,12 @@ import {
   ChevronRight,
   Sparkles,
   History,
+  Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader } from '@/components/ui/Card';
 import { Tag } from '@/components/ui/Tag';
+import { useAppStore } from '@/store';
 
 const RECENT_HISTORY = [
   { text: 'Low energy · work stress', tag: '3 days ago', variant: 'cyan' as const },
@@ -19,8 +21,33 @@ const RECENT_HISTORY = [
 
 export default function AnalysisInput() {
   const navigate = useNavigate();
-  const [content, setContent] = useState('');
+  const currentAnalysisInput = useAppStore((s) => s.currentAnalysisInput);
+  const setAnalysisInput = useAppStore((s) => s.setAnalysisInput);
+  const clearAnalysisSession = useAppStore((s) => s.clearAnalysisSession);
+
+  const [content, setContent] = useState(currentAnalysisInput);
   const [isRecording, setIsRecording] = useState(false);
+
+  // Keep store in sync when content changes
+  useEffect(() => {
+    setContent(currentAnalysisInput);
+  }, [currentAnalysisInput]);
+
+  const handleChange = (val: string) => {
+    setContent(val);
+    setAnalysisInput(val);
+  };
+
+  const handleClear = () => {
+    setContent('');
+    clearAnalysisSession();
+  };
+
+  const handleNext = () => {
+    if (!content.trim()) return;
+    setAnalysisInput(content.trim());
+    navigate('/analysis/privacy-review');
+  };
 
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
 
@@ -47,9 +74,22 @@ export default function AnalysisInput() {
                 Describe your mood, thoughts, energy, and what's been on your mind.
               </p>
             </div>
-            <div className="flex items-center gap-1.5 text-xs font-medium text-text-muted">
-              <History className="w-3.5 h-3.5" />
-              Private by default
+            <div className="flex items-center gap-2">
+              {content.trim() && (
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  className="text-xs text-text-muted hover:text-red-400 flex items-center gap-1 transition-colors px-2 py-1 rounded-lg bg-surface-hover/50"
+                  title="Clear input and reset analysis"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Clear
+                </button>
+              )}
+              <div className="flex items-center gap-1.5 text-xs font-medium text-text-muted">
+                <History className="w-3.5 h-3.5" />
+                Private by default
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -58,9 +98,9 @@ export default function AnalysisInput() {
           <div className="relative">
             <textarea
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => handleChange(e.target.value)}
               rows={8}
-              placeholder="There's no right way to write here. Whatever feels right for you..."
+              placeholder='Example: "I have been feeling anxious for the last few days, worrying constantly about upcoming presentations. My stomach feels restless and I struggle to relax..."'
               className="w-full px-4 py-4 text-sm md:text-base leading-relaxed rounded-2xl bg-bg-primary/60 border border-surface-border/70 text-text-primary placeholder:text-text-muted/70 resize-vertical min-h-[180px] focus:outline-none focus:border-accent-lavender/60 focus:ring-2 focus:ring-accent-lavender/20 transition-all duration-200 pr-16"
               aria-label="Share how you're feeling"
             />
@@ -141,7 +181,7 @@ export default function AnalysisInput() {
             <Button
               variant="primary"
               size="lg"
-              onClick={() => navigate('/analysis/privacy-review')}
+              onClick={handleNext}
               disabled={!content.trim()}
               className="min-w-[220px]"
             >

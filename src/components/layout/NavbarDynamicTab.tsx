@@ -1,5 +1,6 @@
-import { Brain } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useAppStore } from '../../store';
+import { getConditionConfig } from '../../conditions';
 
 export interface NavItemConfig {
   id: string;
@@ -13,10 +14,12 @@ export function NavbarDynamicTab(): NavItemConfig | null {
 
   if (!activeCondition) return null;
 
+  const config = getConditionConfig(activeCondition);
+
   return {
-    id: `condition-${activeCondition.id}`,
-    label: `${activeCondition.icon} ${activeCondition.name}`,
-    icon: <Brain className="h-5 w-5" />,
-    to: `/${activeCondition.id}`,
+    id: `condition-${config.conditionId}`,
+    label: config.name,
+    icon: <Heart className="h-5 w-5" />,
+    to: `/${config.conditionId}`,
   };
 }

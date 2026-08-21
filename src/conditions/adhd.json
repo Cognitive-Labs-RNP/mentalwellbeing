@@ -1,100 +1,63 @@
 {
   "conditionId": "adhd",
-  "name": "ADHD Support",
-  "description": "Support for attention regulation, task initiation, focus management, and organisation that many people with ADHD find helpful.",
-  "immediateActions": [
+  "name": "ADHD",
+  "description": "Pattern related to attention regulation, task initiation, and executive function.",
+  "taskBreakerEnabled": true,
+  "recommendedSoundIds": ["brown-noise", "white-noise", "ambient"],
+  "safetyGuidance": "This is not a clinical diagnosis. Informational pattern match based on executive function and focus reports.",
+  "solutions": [
     {
-      "id": "adhd-focus-01",
-      "title": "Focus Timer Sprint",
-      "durationMinutes": 15,
-      "type": "focus-timer",
+      "id": "adhd-sol-1",
+      "title": "AI Task Breaker",
+      "purpose": "Help the user break an overwhelming task into smaller actionable steps.",
+      "type": "task-breaker"
+    },
+    {
+      "id": "adhd-sol-2",
+      "title": "Focus Session",
+      "purpose": "Give the user a structured period of focused work.",
+      "type": "focus-session",
+      "durationSeconds": 1500,
+      "recommendedSoundId": "brown-noise",
       "instructions": [
-        "Choose ONE single task you want to work on right now",
-        "Write the task down so it is visible: I will work on [task] for 15 minutes",
-        "Set a timer for 15 minutes",
-        "Remove obvious distractions: put phone in another room, close extra tabs",
-        "Work only on that task until the timer rings",
-        "When the timer ends, stand up, stretch, and decide: 5-minute break or another sprint?"
+        "Pick exactly ONE task to focus on during this window.",
+        "Remove phone and notification distractions.",
+        "Start the timer and work continuously until completion.",
+        "Take a complete rest when the timer rings."
       ]
     },
     {
-      "id": "adhd-break-01",
-      "title": "Task Breakdown: First 3 Steps",
-      "durationMinutes": 5,
-      "type": "task-breakdown",
+      "id": "adhd-sol-3",
+      "title": "Task Prioritization",
+      "purpose": "Help the user organize tasks into High, Medium, and Low priority.",
+      "type": "task-prioritization"
+    },
+    {
+      "id": "adhd-sol-4",
+      "title": "Short Movement / Reset",
+      "purpose": "Give the user a short physical reset between periods of attention.",
+      "type": "movement",
+      "durationSeconds": 180,
       "instructions": [
-        "Write down the project or task that feels overwhelming",
-        "Ask yourself: What is the very first physical action I could take? (e.g. open document, get pen)",
-        "Write Step 1 in one line",
-        "Ask: If I finished Step 1, what would Step 2 be?",
-        "Write Step 2 and Step 3 the same way",
-        "Put your list somewhere visible and start Step 1 right now"
+        "Stand up from your desk or seat immediately.",
+        "Roll your shoulders backward 10 times.",
+        "Reach up high toward the ceiling and hold for 15 seconds.",
+        "Take a quick walk around your room or drink a glass of water."
       ]
     },
     {
-      "id": "adhd-pomodoro-01",
-      "title": "Pomodoro with Sensory Reset",
-      "durationMinutes": 30,
-      "type": "pomodoro",
+      "id": "adhd-sol-5",
+      "title": "Mindfulness Meditation",
+      "purpose": "Provide a short mindfulness reset.",
+      "type": "meditation",
+      "durationSeconds": 300,
+      "recommendedSoundId": "white-noise",
       "instructions": [
-        "Set a timer for 25 minutes of focused work on one task",
-        "During work: if distractions pop into your head, write them on a notepad to return to later",
-        "When the 25 minutes end, write down exactly where you stopped so you can resume easily",
-        "Take a 5-minute sensory reset break: stand up, walk around, drink water, look away from the screen",
-        "After the break, do a quick 3-2-1 countdown and resume where you left off"
-      ]
-    },
-    {
-      "id": "adhd-priority-01",
-      "title": "Priority Planning Matrix",
-      "durationMinutes": 8,
-      "type": "priority-planning",
-      "instructions": [
-        "List all the tasks currently on your mind",
-        "Circle the top 3 that have real deadlines or consequences today",
-        "From those 3, pick the ONE that gives you the most anxiety or relief when finished",
-        "Estimate how long each circled task will take",
-        "Schedule the hardest task at your personal best time of day",
-        "Cross everything else off today's list; it can wait"
+        "Sit comfortably with your spine upright.",
+        "Focus your attention entirely on the physical sensation of breathing.",
+        "When your attention wanders, notice it calmly without frustration.",
+        "Gently redirect your focus back to your next breath."
       ]
     }
-  ],
-  "tools": [
-    {
-      "id": "tool-adhd-timer",
-      "name": "Flexible Focus Timer",
-      "description": "Customisable Pomodoro-style timer with body-double mode and visual progress display.",
-      "type": "focus-timer"
-    },
-    {
-      "id": "tool-adhd-breakdown",
-      "name": "Task Crusher",
-      "description": "Break intimidating projects into tiny, actionable steps with automatic scheduling.",
-      "type": "task-manager"
-    },
-    {
-      "id": "tool-adhd-distract",
-      "name": "Distraction Capture Pad",
-      "description": "Quick-capture tool to jot down intrusive thoughts and ideas during focus sessions.",
-      "type": "note-taker"
-    },
-    {
-      "id": "tool-adhd-routines",
-      "name": "Visual Routine Builder",
-      "description": "Drag-and-drop routine builder with visual checklists and gentle transition prompts.",
-      "type": "routine-planner"
-    },
-    {
-      "id": "tool-adhd-rewards",
-      "name": "Reward Tracker",
-      "description": "Immediate reward system for completed tasks to build positive reinforcement loops.",
-      "type": "gamified-tracker"
-    }
-  ],
-  "recommendedSoundIds": ["white-noise", "brown-noise", "rain"],
-  "timerConfig": {
-    "defaultDurationMinutes": 15,
-    "options": [15, 25, 30, 45]
-  },
-  "safetyGuidance": "ADHD is a neurodevelopmental difference with many strengths, and there are effective strategies and supports available. If ADHD symptoms are significantly affecting your work, relationships, or quality of life, consider speaking with a healthcare provider or mental health professional who specialises in ADHD. Remember to be patient and kind to yourself as you find what works best for you."
+  ]
 }

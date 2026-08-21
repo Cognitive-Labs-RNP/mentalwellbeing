@@ -1,123 +1,69 @@
 {
   "conditionId": "cognitive-overload",
   "name": "Cognitive Overload",
-  "description": "When the amount of information or demands exceeds your working memory capacity, causing mental fatigue, decision paralysis, forgetfulness, and reduced focus.",
-  "immediateActions": [
+  "description": "Pattern related to mental exhaustion, information saturation, and feeling overwhelmed by complex demands.",
+  "taskBreakerEnabled": true,
+  "recommendedSoundIds": ["brown-noise", "white-noise", "rain", "ambient"],
+  "safetyGuidance": "This is not a clinical diagnosis. Pattern match based on high mental processing demands and fatigue.",
+  "solutions": [
     {
-      "id": "cog-dump-01",
-      "title": "Brain Dump: Clear the Cache",
-      "durationMinutes": 6,
-      "type": "externalisation",
+      "id": "cog-sol-1",
+      "title": "AI Task Breaker",
+      "purpose": "Break a mentally overwhelming task into smaller manageable actions.",
+      "type": "task-breaker"
+    },
+    {
+      "id": "cog-sol-2",
+      "title": "Brain Dump / Empty-Mind Activity",
+      "purpose": "Give the user a short structured period to unload thoughts and mentally reset.",
+      "type": "reflection",
+      "durationSeconds": 300,
+      "recommendedSoundId": "rain",
       "instructions": [
-        "Grab paper or open a blank note",
-        "Set a timer for 3 minutes",
-        "Write EVERY thought, to-do, worry, and reminder currently occupying your head",
-        "Do not organise, sort, or censor — just get it all out",
-        "After 3 minutes, review your list and circle only the ONE most urgent/important item",
-        "Move everything else to a 'later' list, calendar, or delegate where possible",
-        "Close the list and focus only on your one circled item"
+        "Take a blank paper or digital note.",
+        "Unload every single pending thought, task, or worry without organizing it.",
+        "Clear your head completely until nothing is waiting in active memory.",
+        "Close the note and take 3 deep breaths."
       ]
     },
     {
-      "id": "cog-reset-01",
-      "title": "Sensory Cognitive Reset",
-      "durationMinutes": 4,
-      "type": "reset",
+      "id": "cog-sol-3",
+      "title": "Focus Session",
+      "purpose": "Provide a defined period for completing one selected task.",
+      "type": "focus-session",
+      "durationSeconds": 900,
+      "recommendedSoundId": "brown-noise",
       "instructions": [
-        "Stand up from your desk or current position",
-        "Walk to a different room or outside if possible",
-        "Look at something 20+ feet away for 20 seconds (20-20-20 rule for eyes)",
-        "Shake out your arms and legs vigorously for 15 seconds",
-        "Take a drink of water slowly, noticing the temperature and taste",
-        "Take 3 deep 'lion's breaths': inhale through nose, exhale through mouth with a sigh",
-        "Return with a clear intention for the next 25 minutes"
+        "Select ONE single item from your brain dump.",
+        "Close all other browser tabs and notifications.",
+        "Work quietly for 15 minutes on just this single item."
       ]
     },
     {
-      "id": "cog-prioritize-01",
-      "title": "2-Minute Priority Filter",
-      "durationMinutes": 3,
-      "type": "decision",
+      "id": "cog-sol-4",
+      "title": "Breathing Reset",
+      "purpose": "Provide a short breathing-based mental reset.",
+      "type": "breathing",
+      "durationSeconds": 300,
       "instructions": [
-        "List all tasks currently competing for your attention",
-        "Apply the '2-minute rule': anything that takes less than 2 minutes, do it NOW",
-        "From what remains, ask: What is the ONE thing that, if done, would make everything else easier or irrelevant?",
-        "That is your 'first frog' — do it next",
-        "Move 2 other items to 'today' slot, everything else to 'this week'",
-        "Close all other tabs and documents; only keep open what you need for the first frog"
+        "Close your eyes and place hands over your lap.",
+        "Inhale slowly for 4 seconds.",
+        "Exhale slowly for 6 seconds.",
+        "Focus only on the air moving through your nose."
       ]
     },
     {
-      "id": "cog-stress-priority-01",
-      "title": "Overwhelm Triage: Star & Circle Method",
-      "durationMinutes": 8,
-      "type": "decision",
+      "id": "cog-sol-5",
+      "title": "Short Meditation",
+      "purpose": "Provide a short mindfulness reset.",
+      "type": "meditation",
+      "durationSeconds": 300,
+      "recommendedSoundId": "white-noise",
       "instructions": [
-        "Write down everything that currently feels stressful or overwhelming, one item per line",
-        "Place a star next to items with a real deadline within the next 24 hours",
-        "Place a circle next to items that are truly within your control right now",
-        "For starred+circled items, write ONE tiny next action you can take in the next 2 hours",
-        "For items you circled without a star, schedule one 15-minute slot later this week",
-        "For items you cannot control, cross them off: I release what I cannot change right now"
-      ]
-    },
-    {
-      "id": "cog-pomodoro-01",
-      "title": "25-Minute Focus Sprint",
-      "durationMinutes": 25,
-      "type": "focus-timer",
-      "instructions": [
-        "Choose ONE single task before starting the timer",
-        "Remove all notifications: phone on silent, extra tabs closed",
-        "Set a timer for 25 minutes",
-        "If off-topic thoughts arise, write them quickly on a scratch note — do not act on them yet",
-        "When the timer ends, write exactly where you stopped so re-entry is instant",
-        "Take a 5-minute walk or stretch break before deciding to do another sprint"
+        "Sit still and let your brain stop processing incoming inputs.",
+        "Listen to the background soundscape without analyzing it.",
+        "Give your cognitive system 5 minutes of complete rest."
       ]
     }
-  ],
-  "tools": [
-    {
-      "id": "tool-cog-braindump",
-      "name": "Brain Dump Template",
-      "description": "Structured brain dump templates that automatically sort into categories and priorities.",
-      "type": "braindump-tool"
-    },
-    {
-      "id": "tool-cog-focus",
-      "name": "Focus Session Timer",
-      "description": "Customisable Pomodoro-style timer with break prompts, sensory resets, and mode switching.",
-      "type": "focus-timer"
-    },
-    {
-      "id": "tool-cog-decision",
-      "name": "Decision Fatigue Reducer",
-      "description": "Framework to reduce daily decisions with defaults, routines, and binary choice filters.",
-      "type": "decision-tool"
-    },
-    {
-      "id": "tool-cog-load",
-      "name": "Cognitive Load Tracker",
-      "description": "Track your daily cognitive load alongside sleep, caffeine, and task complexity to find your patterns.",
-      "type": "load-tracker"
-    },
-    {
-      "id": "tool-cog-workingmem",
-      "name": "Working Memory Support Kit",
-      "description": "Checklists, templates, and mnemonic tools to reduce reliance on raw working memory.",
-      "type": "memory-support"
-    },
-    {
-      "id": "tool-cog-breath",
-      "name": "Breath Rhythm Guide",
-      "description": "Animated visual guide for multiple breathing patterns with adjustable pace — a quick mental reset.",
-      "type": "breathing-timer"
-    }
-  ],
-  "recommendedSoundIds": ["white-noise", "brown-noise", "rain", "river"],
-  "timerConfig": {
-    "defaultDurationMinutes": 25,
-    "options": [15, 25, 45, 60]
-  },
-  "safetyGuidance": "Cognitive overload is your brain telling you it has reached capacity — it is not a personal failure, it is a system signal. Chronic overload can worsen over time, so if you regularly feel mentally saturated, examine your workload boundaries and consider discussing capacity with your manager, team, or loved ones. Your brain has limits, and respecting them makes you more effective in the long run, not less."
+  ]
 }

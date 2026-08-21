@@ -1,127 +1,60 @@
 {
   "conditionId": "social-detachment",
   "name": "Social Detachment",
-  "description": "A pattern of withdrawing from social connections, feeling disconnected from others, or preferring isolation that may feel protective but can lead to loneliness and reduced wellbeing over time.",
-  "immediateActions": [
+  "description": "Pattern related to social withdrawal, feeling disconnected, or reluctance to engage with others.",
+  "taskBreakerEnabled": false,
+  "recommendedSoundIds": ["forest", "rain", "ambient"],
+  "safetyGuidance": "This is not a clinical diagnosis. Pattern match based on reported social isolation or detachment.",
+  "solutions": [
     {
-      "id": "sd-microconnect-01",
-      "title": "Micro-Connection Challenge",
-      "durationMinutes": 5,
-      "type": "micro-connection",
+      "id": "soc-sol-1",
+      "title": "Mindfulness Meditation",
+      "purpose": "Help user observe thoughts and connect gently with internal feelings.",
+      "type": "meditation",
+      "durationSeconds": 300,
+      "recommendedSoundId": "ambient",
       "instructions": [
-        "Choose ONE tiny social action you can take today that feels doable — nothing big",
-        "Options: Text a friend one sentence, comment on a post, say 'good morning' to a neighbour, pet a stranger's dog, make eye contact and smile at a barista",
-        "Write the action down and commit to doing it within the next 2 hours",
-        "After you do it, notice: What happened? How did it feel? Was it as hard as you expected?",
-        "Rate your mood before and after, even if it's only a 1-point shift"
+        "Sit comfortably and notice the physical presence of your body.",
+        "Acknowledge feelings of isolation without self-criticism.",
+        "Breathe warmly into your chest area."
       ]
     },
     {
-      "id": "sd-values-01",
-      "title": "Why Connection Check",
-      "durationMinutes": 8,
+      "id": "soc-sol-2",
+      "title": "Self-Reflection",
+      "purpose": "Give the user structured prompts to reflect on their current emotional state.",
       "type": "reflection",
+      "durationSeconds": 300,
       "instructions": [
-        "Write: What am I protecting myself from by staying disconnected?",
-        "Write: What did I used to enjoy about being with people (even specific people)?",
-        "Write: What is one small thing I miss about connection?",
-        "Write: Who is one person in my life I feel even slightly safe around?",
-        "Write one tiny next step I could take with that person: a message, a walk invitation, a reaction emoji reply",
-        "Put that next step in your calendar for tomorrow"
+        "Reflect on one person who has been supportive or safe in the past.",
+        "Consider what kind of low-pressure connection feels manageable today.",
+        "Acknowledge that small social steps are completely valid."
       ]
     },
     {
-      "id": "sd-lowstakes-01",
-      "title": "Low-Stakes Social Warm-Up",
-      "durationMinutes": 6,
-      "type": "exposure",
+      "id": "soc-sol-3",
+      "title": "Small Social Step",
+      "purpose": "Encourage one small manageable social action.",
+      "type": "tiny-step"
+    },
+    {
+      "id": "soc-sol-4",
+      "title": "Guided Breathing",
+      "purpose": "Provide a short calming breathing activity.",
+      "type": "breathing",
+      "durationSeconds": 300,
+      "recommendedSoundId": "rain",
       "instructions": [
-        "Choose a very low-pressure social setting: park bench, café, library, community garden",
-        "Go there for 10 minutes without your phone — just observe people",
-        "No pressure to interact, just notice human presence around you",
-        "Notice 3 people and silently wish them well (silent metta: May you be well, may you be at peace)",
-        "If comfortable, make one tiny friendly gesture: smile, hold a door, say thank you to someone",
-        "Leave whenever you want — there is no minimum except showing up"
+        "Inhale gently for 4 counts.",
+        "Exhale smoothly for 6 counts.",
+        "Settle your nervous system into ease."
       ]
     },
     {
-      "id": "sd-54321-01",
-      "title": "5-4-3-2-1 Social Grounding",
-      "durationMinutes": 4,
-      "type": "grounding",
-      "instructions": [
-        "While in an anxious or disconnected moment, do this silently to come back to present",
-        "Name 5 things you can SEE in the space around you",
-        "Name 4 things you can physically TOUCH (clothes on skin, feet on floor, chair under you)",
-        "Name 3 things you can HEAR right now",
-        "Name 2 things you can SMELL (even if just your shampoo or room air)",
-        "Name 1 thing you can TASTE",
-        "Remind yourself: I am safe. My body is having a feeling. This feeling will pass. I have gotten through this before."
-      ]
-    },
-    {
-      "id": "sd-postsocial-01",
-      "title": "Post-Social Recovery Ritual",
-      "durationMinutes": 10,
-      "type": "reflection",
-      "instructions": [
-        "After a social interaction that drained you, give yourself explicit permission to decompress",
-        "Find a quiet, comfortable place and sit without screens for 5 minutes",
-        "Notice where in your body you are holding tension — jaw, shoulders, chest — and breathe into each area",
-        "Write one sentence about what went okay, and one sentence about what felt hard",
-        "Ask: Did anything go better than I expected? Even one small thing counts",
-        "Plan one restorative activity for the next hour: a walk, music, food, quiet hobby"
-      ]
+      "id": "soc-sol-5",
+      "title": "Confidence-Building Activity",
+      "purpose": "Give the user one small achievable action that can build confidence in social interaction.",
+      "type": "confidence-building"
     }
-  ],
-  "tools": [
-    {
-      "id": "tool-sd-circle",
-      "name": "Connection Circle Map",
-      "description": "Map your social circles and identify which connections nourish vs drain you.",
-      "type": "circle-mapper"
-    },
-    {
-      "id": "tool-sd-scripts",
-      "name": "Social Scripts Library",
-      "description": "Ready-to-use gentle scripts for texting, inviting, saying hello, and declining with kindness.",
-      "type": "scripts-library"
-    },
-    {
-      "id": "tool-sd-ladder",
-      "name": "Social Exposure Ladder",
-      "description": "Build your own graded exposure ladder from easiest to hardest social interactions, at your own pace.",
-      "type": "exposure-ladder"
-    },
-    {
-      "id": "tool-sd-qualitative",
-      "name": "Quality vs Quantity Tracker",
-      "description": "Track not how many interactions but how nourished you felt by them.",
-      "type": "quality-tracker"
-    },
-    {
-      "id": "tool-sd-rewild",
-      "name": "Rewilding Social Self",
-      "description": "Guided reflections to rediscover what kind of social being you want to be.",
-      "type": "guided-journal"
-    },
-    {
-      "id": "tool-sd-postmortem",
-      "name": "Post-Social Recovery Plan",
-      "description": "Plan your post-event recovery ritual to decompress and prevent the social energy hangover.",
-      "type": "recovery-plan"
-    },
-    {
-      "id": "tool-sd-compassion",
-      "name": "Self-Compassion Letters",
-      "description": "Guided letter writing exercises for post-social self-criticism spirals.",
-      "type": "compassion-tool"
-    }
-  ],
-  "recommendedSoundIds": ["birds", "ambient", "singing-bowl", "forest"],
-  "timerConfig": {
-    "defaultDurationMinutes": 8,
-    "options": [5, 8, 10, 15]
-  },
-  "safetyGuidance": "Social detachment often starts as a protective strategy and that is okay — your system may have learned to rely on it for good reasons. Social anxiety is one of the most common and treatable anxiety conditions — you are far from alone in this. If detachment or social anxiety is causing you distress or loneliness, gentle and gradual reconnection at your own pace is possible. If feelings of isolation are persistent or accompanied by hopelessness, please consider speaking with a therapist. You are not alone in feeling disconnected; many people find their way back to meaningful connection."
+  ]
 }

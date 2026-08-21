@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { Button } from './Button'
 import type { Sound } from '../../types'
+import { createSoundHandle, type SoundHandle } from '../../services/soundEngine'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -24,6 +25,8 @@ interface AudioPlayerProps {
   /** Fallback display name when no Sound object is provided */
   trackName?: string
   onComplete?: () => void
+  /** Fired once when the session completes or is stopped/reset after playback. */
+  onSessionEnd?: (info: { elapsedSeconds: number; completed: boolean }) => void
   defaultDuration?: DurationOption
   /** Initial volume 0–100 */
   defaultVolume?: number
@@ -57,6 +60,7 @@ export function AudioPlayer({
   sound,
   trackName,
   onComplete,
+  onSessionEnd,
   defaultDuration = 10,
   defaultVolume = 70,
   loop,
@@ -68,6 +72,7 @@ export function AudioPlayer({
   const displayName = sound?.name ?? trackName ?? 'Sound Session'
   const audioSrc = sound?.file ?? null
   const shouldLoop = loop ?? sound?.loopable ?? true
+  const soundId = sound?.id ?? 'ambient'
 
   // Duration / timer state
   const [durationChoice, setDurationChoice] = useState<DurationOption>(defaultDuration)
@@ -80,8 +85,20 @@ export function AudioPlayer({
   const [volume, setVolume] = useState(defaultVolume)
   const [muted, setMuted] = useState(false)
 
-  // HTML Audio element ref
-  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const handleRef = useRef<SoundHandle | null>(null)
+  const endedRef = useRef(false)
+  const elapsedRef = useRef(0)
+  const onSessionEndRef = useRef(onSessionEnd)
+  onSessionEndRef.current = onSessionEnd
+  const onCompleteRef = useRef(onComplete)
+  onCompleteRef.current = onComplete
+
+  const emitSessionEnd = useCallback((completedSession: boolean) => {
+    if (endedRef.current) return
+    endedRef.current = true
+    const seconds = Math.max(1, elapsedRef.current)
+    onSessionEndRef.current?.({ elapsedSeconds: seconds, completed: completedSession })
+  }, [])
 
   const totalSeconds =
     durationChoice === 'custom'
@@ -98,43 +115,31 @@ export function AudioPlayer({
   useEffect(() => {
     if (!audioSrc) return
 
-    const audio = new Audio(audioSrc)
-    audio.loop = shouldLoop
-    audio.volume = muted ? 0 : volume / 100
-    audio.preload = 'none'
-    audioRef.current = audio
+    const handle = createSoundHandle(audioSrc, soundId, shouldLoop)
+    handle.setVolume(muted ? 0 : volume / 100)
+    handleRef.current = handle
 
     return () => {
-      audio.pause()
-      audio.src = ''
-      audioRef.current = null
+      handle.destroy()
+      handleRef.current = null
     }
     // Only re-create when the source changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audioSrc])
-
-  // Sync loop flag
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.loop = shouldLoop
-  }, [shouldLoop])
+  }, [audioSrc, soundId])
 
   // Sync volume
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = muted ? 0 : volume / 100
-    }
+    handleRef.current?.setVolume(muted ? 0 : volume / 100)
   }, [volume, muted])
 
   // Play / pause the real audio element
   useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
+    const handle = handleRef.current
+    if (!handle) return
     if (isPlaying) {
-      audio.play().catch(() => {
-        // Audio may not be available (placeholder file); fail silently
-      })
+      void handle.play()
     } else {
-      audio.pause()
+      handle.pause()
     }
   }, [isPlaying])
 
@@ -144,21 +149,32 @@ export function AudioPlayer({
 
   const handleTick = useCallback(() => {
     setElapsed((prev) => {
-      if (prev + 1 >= totalSeconds) {
+      const next = prev + 1
+      elapsedRef.current = next
+      if (next >= totalSeconds) {
         setIsPlaying(false)
         setCompleted(true)
-        onComplete?.()
+        onCompleteRef.current?.()
+        emitSessionEnd(true)
         return totalSeconds
       }
-      return prev + 1
+      return next
     })
-  }, [totalSeconds, onComplete])
+  }, [totalSeconds, emitSessionEnd])
 
   useEffect(() => {
     if (!isPlaying) return
     const id = window.setInterval(handleTick, 1000)
     return () => window.clearInterval(id)
   }, [isPlaying, handleTick])
+
+  useEffect(() => {
+    return () => {
+      if (elapsedRef.current > 0 && !endedRef.current) {
+        emitSessionEnd(false)
+      }
+    }
+  }, [emitSessionEnd])
 
   // ---------------------------------------------------------------------------
   // Controls
@@ -167,29 +183,31 @@ export function AudioPlayer({
   const togglePlay = () => {
     if (completed) {
       setElapsed(0)
+      elapsedRef.current = 0
       setCompleted(false)
+      endedRef.current = false
     }
     setIsPlaying((p) => !p)
   }
 
   const reset = () => {
+    const hadPlayback = elapsedRef.current > 0 && !completed
     setIsPlaying(false)
+    if (hadPlayback) emitSessionEnd(false)
     setElapsed(0)
+    elapsedRef.current = 0
     setCompleted(false)
-    if (audioRef.current) {
-      audioRef.current.pause()
-      audioRef.current.currentTime = 0
-    }
+    handleRef.current?.stop()
   }
 
   const markComplete = () => {
     setIsPlaying(false)
     setCompleted(true)
     setElapsed(totalSeconds)
-    if (audioRef.current) {
-      audioRef.current.pause()
-    }
-    onComplete?.()
+    elapsedRef.current = Math.max(elapsedRef.current, 1)
+    handleRef.current?.pause()
+    onCompleteRef.current?.()
+    emitSessionEnd(true)
   }
 
   const changeDuration = (val: DurationOption) => {

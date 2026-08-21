@@ -31,7 +31,7 @@ if (!supabaseAnonKey || supabaseAnonKey === 'your-anon-public-key-here') {
 // Row Level Security (RLS) policies enforce data isolation on the database.
 // ---------------------------------------------------------------------------
 
-export const supabase = createClient<Database>(
+export const supabase: any = createClient(
   supabaseUrl ?? 'http://localhost:54321', // safe fallback keeps TS happy; warns above
   supabaseAnonKey ?? 'missing-key',
   {

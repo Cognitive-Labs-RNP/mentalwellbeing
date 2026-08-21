@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
 // Database types for the Supabase schema defined in
-// supabase/migrations/001_initial_schema.sql
+// supabase/migrations/001_initial_schema.sql & 002_phase5_tools_schema.sql
 //
 // These are the shapes of rows as they exist in Postgres.
 // Keep them separate from the UI/store types in types/index.ts.
@@ -71,6 +71,20 @@ export interface ToolRecordRow {
   unit: string | null;
   /** Flexible JSONB for tool-specific data */
   metadata: Record<string, unknown>;
+  /** Null on legacy rows; true when the entry/session was completed */
+  completed: boolean | null;
+  created_at: string;
+}
+
+export interface HealthRecordRow {
+  id: string;
+  user_id: string;
+  height_cm: number;
+  weight_kg: number;
+  age: number | null;
+  activity_level: string | null;
+  bmi: number;
+  bmi_category: string;
   created_at: string;
 }
 
@@ -104,7 +118,11 @@ export type InsertActivityLog = Omit<ActivityLogRow, 'id' | 'created_at'>;
 
 export type InsertToolUsage = Omit<ToolUsageRow, 'id' | 'created_at'>;
 
-export type InsertToolRecord = Omit<ToolRecordRow, 'id' | 'created_at'>;
+export type InsertToolRecord = Omit<ToolRecordRow, 'id' | 'created_at' | 'completed'> & {
+  completed?: boolean | null;
+};
+
+export type InsertHealthRecord = Omit<HealthRecordRow, 'id' | 'created_at'>;
 
 export type InsertFeedback = Omit<FeedbackRow, 'id' | 'created_at'>;
 
@@ -145,6 +163,11 @@ export interface Database {
         Row: ToolRecordRow;
         Insert: InsertToolRecord;
         Update: Partial<InsertToolRecord>;
+      };
+      health_records: {
+        Row: HealthRecordRow;
+        Insert: InsertHealthRecord;
+        Update: Partial<InsertHealthRecord>;
       };
       feedback: {
         Row: FeedbackRow;

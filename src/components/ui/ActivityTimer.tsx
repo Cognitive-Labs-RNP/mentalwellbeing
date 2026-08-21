@@ -1,284 +1,298 @@
-import { useState, useEffect, useCallback, useId } from 'react'
-import { Play, Pause, RotateCcw, CheckCircle2, Clock, Timer } from 'lucide-react'
-import { Button } from './Button'
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Play, Pause, RotateCcw, CheckCircle2, Volume2, VolumeX } from 'lucide-react';
+import { Button } from './Button';
+import { getSoundById } from '@/data/sounds';
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-export type TimerMode =
-  | 'countdown'   // counts down from a chosen duration
-  | 'stopwatch'   // counts up from zero
-
-export interface ActivityTimerProps {
-  /** Human-readable label shown above the timer */
-  label?: string
-  /** Default duration in minutes (used for countdown mode) */
-  defaultDurationMinutes?: number
-  /** Available duration options in minutes */
-  durationOptions?: number[]
-  mode?: TimerMode
-  /** Called when the timer completes (countdown reaches zero) */
-  onComplete?: (elapsedSeconds: number) => void
-  /** Called on every tick with current elapsed seconds */
-  onTick?: (elapsedSeconds: number) => void
-  className?: string
-  /** Hide the duration selector (useful when duration is fixed by the caller) */
-  hideDurationSelector?: boolean
+interface ActivityTimerProps {
+  durationSeconds: number;
+  title: string;
+  instructions?: string[];
+  recommendedSoundId?: string;
+  isBreathing?: boolean;
+  onComplete?: () => void;
+  completed?: boolean;
+  className?: string;
 }
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function formatTime(totalSeconds: number): string {
-  const h = Math.floor(totalSeconds / 3600)
-  const m = Math.floor((totalSeconds % 3600) / 60)
-  const s = Math.floor(totalSeconds % 60)
-  if (h > 0) {
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-  }
-  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-}
-
-function buildDurationLabel(minutes: number): string {
-  if (minutes < 60) return `${minutes} min`
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  return m > 0 ? `${h}h ${m}m` : `${h}h`
-}
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
 
 export function ActivityTimer({
-  label = 'Activity Timer',
-  defaultDurationMinutes = 5,
-  durationOptions = [5, 10, 15, 20],
-  mode = 'countdown',
+  durationSeconds,
+  title,
+  instructions,
+  recommendedSoundId,
+  isBreathing = false,
   onComplete,
-  onTick,
+  completed = false,
   className = '',
-  hideDurationSelector = false,
 }: ActivityTimerProps) {
-  const id = useId()
+  const [remaining, setRemaining] = useState(durationSeconds);
+  const [isActive, setIsActive] = useState(false);
+  const [isFinished, setIsFinished] = useState(completed);
 
-  const [selectedMinutes, setSelectedMinutes] = useState(defaultDurationMinutes)
-  const [elapsed, setElapsed] = useState(0)
-  const [isRunning, setIsRunning] = useState(false)
-  const [isComplete, setIsComplete] = useState(false)
+  // Breathing animation phase state (Inhale 4s, Hold 4s, Exhale 6s)
+  const [breathingPhase, setBreathingPhase] = useState<'Inhale' | 'Hold' | 'Exhale'>('Inhale');
+  const [phaseSeconds, setPhaseSeconds] = useState(4);
 
-  const totalSeconds = selectedMinutes * 60
-  const displaySeconds = mode === 'countdown'
-    ? Math.max(0, totalSeconds - elapsed)
-    : elapsed
-  const progress = totalSeconds > 0 ? Math.min((elapsed / totalSeconds) * 100, 100) : 0
+  // Audio player state
+  const soundObj = recommendedSoundId ? getSoundById(recommendedSoundId) : undefined;
+  const [isSoundPlaying, setIsSoundPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Circumference for the SVG ring
-  const radius = 54
-  const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference - (progress / 100) * circumference
-
-  const handleComplete = useCallback((elapsedSecs: number) => {
-    setIsRunning(false)
-    setIsComplete(true)
-    onComplete?.(elapsedSecs)
-  }, [onComplete])
-
-  const tick = useCallback(() => {
-    setElapsed((prev) => {
-      const next = prev + 1
-      onTick?.(next)
-      if (mode === 'countdown' && next >= totalSeconds) {
-        handleComplete(next)
-        return totalSeconds
-      }
-      return next
-    })
-  }, [mode, totalSeconds, onTick, handleComplete])
-
+  // Initialize audio element if recommended sound exists
   useEffect(() => {
-    if (!isRunning || isComplete) return
-    const id = window.setInterval(tick, 1000)
-    return () => window.clearInterval(id)
-  }, [isRunning, isComplete, tick])
+    if (!soundObj) return;
+    const audio = new Audio(soundObj.file);
+    audio.loop = true;
+    audio.volume = isMuted ? 0 : 0.6;
+    audioRef.current = audio;
 
-  const toggle = () => {
-    if (isComplete) {
-      // restart
-      setElapsed(0)
-      setIsComplete(false)
-      setIsRunning(true)
-      return
+    return () => {
+      audio.pause();
+      audio.src = '';
+      audioRef.current = null;
+    };
+  }, [soundObj, isMuted]);
+
+  // Audio play/pause effect
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (isSoundPlaying && isActive) {
+      audioRef.current.play().catch(() => {});
+    } else {
+      audioRef.current.pause();
     }
-    setIsRunning((r) => !r)
-  }
+  }, [isSoundPlaying, isActive]);
 
-  const reset = () => {
-    setIsRunning(false)
-    setElapsed(0)
-    setIsComplete(false)
-  }
+  // Timer countdown tick
+  useEffect(() => {
+    let interval: number | null = null;
+    if (isActive && remaining > 0) {
+      interval = window.setInterval(() => {
+        setRemaining((prev) => prev - 1);
+      }, 1000);
+    } else if (remaining === 0 && isActive) {
+      setIsActive(false);
+      setIsFinished(true);
+      if (audioRef.current) audioRef.current.pause();
+      setIsSoundPlaying(false);
+      onComplete?.();
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isActive, remaining, onComplete]);
 
-  const selectDuration = (minutes: number) => {
-    reset()
-    setSelectedMinutes(minutes)
-  }
+  // Breathing cycle phase tick
+  useEffect(() => {
+    if (!isBreathing || !isActive) return;
+    const interval = setInterval(() => {
+      setPhaseSeconds((prev) => {
+        if (prev <= 1) {
+          if (breathingPhase === 'Inhale') {
+            setBreathingPhase('Hold');
+            return 4;
+          } else if (breathingPhase === 'Hold') {
+            setBreathingPhase('Exhale');
+            return 6;
+          } else {
+            setBreathingPhase('Inhale');
+            return 4;
+          }
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isBreathing, isActive, breathingPhase]);
 
-  const markComplete = () => {
-    handleComplete(elapsed)
-    setElapsed(totalSeconds)
-  }
+  const handleStart = () => {
+    if (isFinished) {
+      setRemaining(durationSeconds);
+      setIsFinished(false);
+    }
+    setIsActive(true);
+  };
+
+  const handlePause = () => {
+    setIsActive(false);
+  };
+
+  const handleReset = () => {
+    setIsActive(false);
+    setRemaining(durationSeconds);
+    setIsFinished(false);
+    setBreathingPhase('Inhale');
+    setPhaseSeconds(4);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsSoundPlaying(false);
+  };
+
+  const handleMarkComplete = () => {
+    setIsActive(false);
+    setRemaining(0);
+    setIsFinished(true);
+    if (audioRef.current) audioRef.current.pause();
+    setIsSoundPlaying(false);
+    onComplete?.();
+  };
+
+  const toggleSound = () => {
+    setIsSoundPlaying((prev) => !prev);
+  };
+
+  const toggleMute = () => {
+    setIsMuted((prev) => !prev);
+  };
+
+  const formatMMSS = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const progressPercent = durationSeconds > 0 ? ((durationSeconds - remaining) / durationSeconds) * 100 : 0;
 
   return (
-    <div
-      className={`bg-surface/80 backdrop-blur-xl border border-surface-border rounded-2xl p-6 shadow-glass ${className}`}
-      role="timer"
-      aria-label={label}
-    >
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-accent-lavender/30 to-accent-cyan/25 border border-surface-border/60">
-          <Timer className="w-5 h-5 text-accent-lavender" />
-        </div>
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
-            {mode === 'countdown' ? 'Countdown' : 'Stopwatch'}
-          </p>
-          <h3 className="font-display text-base font-semibold text-text-primary leading-tight">
-            {label}
-          </h3>
-        </div>
-      </div>
+    <div className={`p-6 rounded-2xl bg-surface/80 border border-surface-border/80 backdrop-blur-xl shadow-glass space-y-6 ${className}`}>
+      {/* Title & Status */}
+      <div className="flex items-center justify-between gap-4">
+        <h4 className="font-display text-lg font-semibold text-text-primary flex items-center gap-2">
+          {title}
+          {isFinished && (
+            <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-accent-green/20 text-accent-green font-medium border border-accent-green/30">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Completed
+            </span>
+          )}
+        </h4>
 
-      {/* Ring + time display */}
-      <div className="flex items-center justify-center mb-6">
-        <div className="relative w-36 h-36">
-          <svg
-            className="w-full h-full -rotate-90"
-            viewBox="0 0 120 120"
-            aria-hidden="true"
-          >
-            {/* Track */}
-            <circle
-              cx="60"
-              cy="60"
-              r={radius}
-              fill="none"
-              strokeWidth="6"
-              className="stroke-surface-hover/60"
-            />
-            {/* Progress */}
-            <circle
-              cx="60"
-              cy="60"
-              r={radius}
-              fill="none"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              className={`transition-all duration-1000 ease-linear ${
-                isComplete
-                  ? 'stroke-accent-green'
-                  : 'stroke-accent-lavender'
+        {/* Optional Sound Controls */}
+        {soundObj && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleSound}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all flex items-center gap-1.5 ${
+                isSoundPlaying
+                  ? 'bg-accent-cyan/25 border-accent-cyan/40 text-accent-cyan shadow-glow'
+                  : 'bg-surface-hover/50 border-surface-border text-text-muted hover:text-text-primary'
               }`}
-              style={{
-                filter: isComplete
-                  ? 'drop-shadow(0 0 6px rgba(74,222,128,0.5))'
-                  : 'drop-shadow(0 0 6px rgba(167,139,250,0.45))',
-              }}
-            />
-          </svg>
-          {/* Centre readout */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            {isComplete ? (
-              <CheckCircle2 className="w-8 h-8 text-accent-green" />
-            ) : (
-              <>
-                <span
-                  className="font-display text-2xl font-bold text-text-primary tabular-nums"
-                  aria-live="polite"
-                  aria-atomic="true"
-                >
-                  {formatTime(displaySeconds)}
-                </span>
-                {mode === 'countdown' && (
-                  <span className="text-xs text-text-muted mt-0.5 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {buildDurationLabel(selectedMinutes)}
-                  </span>
-                )}
-              </>
+              title={`Toggle ${soundObj.name}`}
+            >
+              <Volume2 className={`w-3.5 h-3.5 ${isSoundPlaying ? 'animate-pulse' : ''}`} />
+              <span>{soundObj.name}</span>
+            </button>
+
+            {isSoundPlaying && (
+              <button
+                onClick={toggleMute}
+                className="p-1.5 rounded-xl bg-surface-hover/60 text-text-muted hover:text-text-primary border border-surface-border"
+                title={isMuted ? 'Unmute' : 'Mute'}
+              >
+                {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+              </button>
             )}
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Duration selector */}
-      {!hideDurationSelector && mode === 'countdown' && (
-        <div
-          className="flex flex-wrap gap-2 justify-center mb-5"
-          role="group"
-          aria-labelledby={`${id}-dur-label`}
-        >
-          <span id={`${id}-dur-label`} className="sr-only">
-            Select duration
-          </span>
-          {durationOptions.map((min) => (
-            <button
-              key={min}
-              onClick={() => selectDuration(min)}
-              aria-pressed={selectedMinutes === min}
-              className={`h-9 px-4 rounded-xl text-xs font-medium transition-all duration-200 ${
-                selectedMinutes === min
-                  ? 'bg-gradient-to-r from-accent-lavender/30 to-accent-cyan/25 text-text-primary border border-accent-lavender/40 shadow-glow'
-                  : 'bg-surface-hover/40 text-text-secondary border border-surface-border/70 hover:bg-surface-hover/70 hover:text-text-primary'
+      {/* Breathing Ring or Timer Display */}
+      <div className="flex flex-col items-center justify-center py-4">
+        {isBreathing ? (
+          <div className="relative w-44 h-44 flex items-center justify-center">
+            {/* Animated breathing circle */}
+            <div
+              className={`absolute inset-0 rounded-full border-2 transition-all duration-1000 ${
+                breathingPhase === 'Inhale'
+                  ? 'scale-110 border-accent-cyan bg-accent-cyan/15 shadow-[0_0_30px_rgba(34,211,238,0.3)]'
+                  : breathingPhase === 'Hold'
+                  ? 'scale-105 border-accent-lavender bg-accent-lavender/15 shadow-[0_0_30px_rgba(167,139,250,0.3)]'
+                  : 'scale-90 border-purple-400 bg-purple-500/10 shadow-none'
               }`}
-            >
-              {buildDurationLabel(min)}
-            </button>
-          ))}
+            />
+            <div className="relative text-center z-10 space-y-1">
+              <span className="text-3xl font-bold font-display tabular-nums text-text-primary">
+                {formatMMSS(remaining)}
+              </span>
+              <p className="text-sm font-semibold text-accent-lavender uppercase tracking-wider">
+                {isActive ? breathingPhase : 'Ready'}
+              </p>
+              {isActive && (
+                <p className="text-xs text-text-muted tabular-nums">{phaseSeconds}s</p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center space-y-2">
+            <div className="text-4xl md:text-5xl font-extrabold font-display tabular-nums tracking-tight text-text-primary">
+              {formatMMSS(remaining)}
+            </div>
+            <p className="text-xs text-text-muted">
+              {isActive ? 'Session in progress' : isFinished ? 'Session completed' : 'Ready to start'}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Progress Bar */}
+      <div className="w-full h-2 bg-surface-hover/60 rounded-full overflow-hidden border border-surface-border/60">
+        <div
+          className={`h-full transition-all duration-500 ${
+            isFinished
+              ? 'bg-gradient-to-r from-accent-green to-emerald-400'
+              : 'bg-gradient-to-r from-accent-lavender to-accent-cyan'
+          }`}
+          style={{ width: `${progressPercent}%` }}
+        />
+      </div>
+
+      {/* Instructions list if provided */}
+      {instructions && instructions.length > 0 && (
+        <div className="space-y-2 bg-bg-primary/40 p-4 rounded-xl border border-surface-border/60">
+          <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Instructions</p>
+          <ul className="space-y-1.5 text-sm text-text-secondary">
+            {instructions.map((inst, idx) => (
+              <li key={idx} className="flex items-start gap-2">
+                <span className="w-5 h-5 rounded-full bg-accent-lavender/15 text-accent-lavender text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                  {idx + 1}
+                </span>
+                <span>{inst}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
-      {/* Controls */}
-      <div className="flex items-center justify-between gap-3">
-        {/* Play / Pause / Restart */}
-        <button
-          onClick={toggle}
-          aria-label={isComplete ? 'Restart timer' : isRunning ? 'Pause timer' : 'Start timer'}
-          className={`w-14 h-14 flex items-center justify-center rounded-2xl transition-all duration-200 ${
-            isComplete
-              ? 'bg-gradient-to-br from-accent-green/35 to-emerald-500/25 text-accent-green border border-accent-green/40 shadow-[0_0_20px_rgba(74,222,128,0.25)]'
-              : isRunning
-              ? 'bg-gradient-to-br from-accent-lavender/40 to-accent-cyan/30 text-white border border-accent-lavender/50 shadow-[0_0_24px_rgba(167,139,250,0.35)]'
-              : 'bg-gradient-to-br from-accent-lavender to-purple-500 text-white shadow-glow hover:scale-105 active:scale-95'
-          }`}
-        >
-          {isComplete ? (
-            <RotateCcw className="w-6 h-6" />
-          ) : isRunning ? (
-            <Pause className="w-6 h-6" fill="currentColor" />
-          ) : (
-            <Play className="w-6 h-6 ml-0.5" fill="currentColor" />
-          )}
-        </button>
-
+      {/* Control Buttons */}
+      <div className="flex items-center justify-between gap-3 pt-2">
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" onClick={reset} aria-label="Reset timer">
+          {!isActive ? (
+            <Button size="md" variant="primary" onClick={handleStart}>
+              <Play className="w-4 h-4 fill-current ml-0.5" />
+              {remaining < durationSeconds && !isFinished ? 'Resume' : 'Start'}
+            </Button>
+          ) : (
+            <Button size="md" variant="secondary" onClick={handlePause}>
+              <Pause className="w-4 h-4 fill-current" />
+              Pause
+            </Button>
+          )}
+
+          <Button size="md" variant="ghost" onClick={handleReset}>
             <RotateCcw className="w-4 h-4" />
             Reset
           </Button>
-          {!isComplete && (
-            <Button size="sm" variant="primary" onClick={markComplete}>
-              <CheckCircle2 className="w-4 h-4" />
-              Done
-            </Button>
-          )}
         </div>
+
+        {!isFinished && (
+          <Button size="md" variant="ghost" className="text-accent-green hover:text-accent-green" onClick={handleMarkComplete}>
+            <CheckCircle2 className="w-4 h-4" />
+            Mark Complete
+          </Button>
+        )}
       </div>
     </div>
-  )
+  );
 }

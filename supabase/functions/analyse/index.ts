@@ -242,7 +242,7 @@ async function callGroq(
   const url = 'https://api.groq.com/openai/v1/chat/completions';
 
   const body = {
-    model: 'llama-3.1-8b-instant',
+    model: 'groq/compound-mini',
     messages: [
       {
         role: 'system',

@@ -27,11 +27,10 @@ import Lifestyle from './pages/tools/Lifestyle';
 import Calm from './pages/tools/Calm';
 import Sleep from './pages/tools/Sleep';
 import ToolsSounds from './pages/tools/Sounds';
+import HealthTracker from './pages/tools/HealthTracker';
+import GratitudeLogger from './pages/tools/GratitudeLogger';
 
 import ConditionHub from './pages/condition';
-import ConditionImmediateSupport from './pages/condition/ImmediateSupport';
-import ConditionTools from './pages/condition/ConditionTools';
-import ConditionSounds from './pages/condition/Sounds';
 import ToolSettings from './pages/ToolSettings';
 
 // ---------------------------------------------------------------------------
@@ -179,7 +178,9 @@ export default function App() {
             <Route path="lifestyle" element={<Lifestyle />} />
             <Route path="calm" element={<Calm />} />
             <Route path="sleep" element={<Sleep />} />
+            <Route path="health" element={<HealthTracker />} />
             <Route path="sounds" element={<ToolsSounds />} />
+            <Route path="gratitude" element={<GratitudeLogger />} />
           </Route>
 
           <Route path="journal" element={<Journal />} />
@@ -188,11 +189,7 @@ export default function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="tool-settings" element={<ToolSettings />} />
 
-          <Route path=":conditionId" element={<ConditionHub />}>
-            <Route path="immediate-support" element={<ConditionImmediateSupport />} />
-            <Route path="tools" element={<ConditionTools />} />
-            <Route path="sounds" element={<ConditionSounds />} />
-          </Route>
+          <Route path=":conditionId" element={<ConditionHub />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

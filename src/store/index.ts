@@ -15,6 +15,11 @@ import type {
   ActivityFeedbackScores,
   ConditionId,
 } from '../types';
+import type { AnalysisEngineResult, AnalysisEngineError } from '../types/aiAnalysis';
+import type { PreprocessorOutput } from '../types/extraction';
+import { preprocess } from '../services/preprocessor';
+import { analyseExtraction } from '../services/aiEngine';
+import { saveAnalysis } from '../services/storage';
 
 // ---------------------------------------------------------------------------
 // Auth session shape stored in the Zustand slice.
@@ -190,6 +195,19 @@ export interface AppStore extends UserState {
   // Application actions (unchanged from previous implementation)
   // ------------------------------------------------------------------
 
+  // ------------------------------------------------------------------
+  // Active Analysis Pipeline State & Actions
+  // ------------------------------------------------------------------
+  currentAnalysisInput: string;
+  currentExtractionOutput: PreprocessorOutput | null;
+  currentAnalysisResult: AnalysisEngineResult | null;
+  analysisError: AnalysisEngineError | null;
+  isAnalysing: boolean;
+
+  setAnalysisInput: (text: string) => void;
+  clearAnalysisSession: () => void;
+  runAnalysisPipeline: () => Promise<boolean>;
+
   logout: () => void;
   setActiveCondition: (conditionId: ConditionId | null) => void;
   addPatternMatch: (match: PatternMatch) => void;
@@ -216,6 +234,103 @@ export const useAppStore = create<AppStore>()(
     (set, get) => ({
       ...getDefaultEmptyState(),
       session: null,
+      currentAnalysisInput: '',
+      currentExtractionOutput: null,
+      currentAnalysisResult: null,
+      analysisError: null,
+      isAnalysing: false,
+
+      setAnalysisInput: (text) => {
+        set({ currentAnalysisInput: text });
+      },
+
+      clearAnalysisSession: () => {
+        set({
+          currentAnalysisInput: '',
+          currentExtractionOutput: null,
+          currentAnalysisResult: null,
+          analysisError: null,
+          isAnalysing: false,
+        });
+      },
+
+      runAnalysisPipeline: async () => {
+        const { currentAnalysisInput, session } = get();
+        const trimmed = currentAnalysisInput.trim();
+        if (!trimmed) return false;
+
+        // 1. Clear previous result before starting new analysis request
+        set({
+          currentAnalysisResult: null,
+          analysisError: null,
+          isAnalysing: true,
+        });
+
+        try {
+          // 2. Local preprocessing (Phase 2)
+          const preprocessed = preprocess({ rawText: trimmed });
+          set({ currentExtractionOutput: preprocessed });
+
+          // 3. Send sanitized extraction to Phase 3 AI Engine
+          const callResult = await analyseExtraction(preprocessed.extraction);
+
+          if (callResult.ok) {
+            const res = callResult.result;
+            const primaryCondStr = res.primary_condition as string;
+            const primaryCond = primaryCondStr !== 'no-clear-match' ? (primaryCondStr as ConditionId) : null;
+
+            set({
+              currentAnalysisResult: res,
+              activeCondition: primaryCond,
+              isAnalysing: false,
+            });
+
+            if (primaryCond) {
+              get().addPatternMatch({
+                conditionId: primaryCond,
+                similarityPercent: res.similarity_score,
+                similarityLevel: res.similarity_score >= 70 ? 'high' : res.similarity_score >= 40 ? 'medium' : 'low',
+                timestamp: new Date().toISOString(),
+              });
+
+              if (session?.userId && !session.isDemo) {
+                const ext = preprocessed.extraction;
+                const mood = ext.severity === 'severe' ? 2 : ext.severity === 'high' ? 3 : ext.severity === 'moderate' ? 5 : 7;
+                const stress = ext.severity === 'severe' ? 9 : ext.severity === 'high' ? 8 : ext.severity === 'moderate' ? 6 : 4;
+                const energy = (ext.symptoms.includes('fatigue') || ext.symptoms.includes('low energy')) ? 3 : 6;
+                const contextTags = Array.from(new Set([...ext.trigger, ...ext.impact]));
+
+                saveAnalysis(session.userId, primaryCond, res.similarity_score, {
+                  mood,
+                  stress,
+                  energy,
+                  context_tags: contextTags,
+                });
+              }
+            }
+            return true;
+          } else {
+            set({
+              analysisError: callResult.error,
+              currentAnalysisResult: null,
+              isAnalysing: false,
+            });
+            return false;
+          }
+        } catch (err) {
+          set({
+            analysisError: {
+              code: 'UNKNOWN',
+              message: err instanceof Error ? err.message : String(err),
+            },
+            currentAnalysisResult: null,
+            isAnalysing: false,
+          });
+          return false;
+        } finally {
+          set({ isAnalysing: false });
+        }
+      },
 
       // ----------------------------------------------------------------
       // Auth
@@ -245,9 +360,8 @@ export const useAppStore = create<AppStore>()(
 
       clearSession: () => {
         set({
-          session: null,
-          account: null,
           ...getDefaultEmptyState(),
+          session: null,
         });
       },
 
@@ -475,7 +589,7 @@ export const useAppStore = create<AppStore>()(
         ];
         for (const key of arrays) {
           if (!Array.isArray(state[key])) {
-            (state[key] as unknown[]) = [];
+            (state as any)[key] = [];
           }
         }
       },

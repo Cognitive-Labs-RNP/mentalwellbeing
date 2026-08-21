@@ -1,88 +1,78 @@
 {
   "conditionId": "ptsd",
   "name": "PTSD",
-  "description": "Post-Traumatic Stress Disorder can develop after experiencing or witnessing a traumatic event, causing intrusive memories, avoidance, hyperarousal, and negative changes in thinking and mood.",
-  "immediateActions": [
+  "description": "Pattern related to trauma responses, hypervigilance, or intrusive stress signals.",
+  "taskBreakerEnabled": false,
+  "recommendedSoundIds": ["ocean", "rain", "forest"],
+  "safetyGuidance": "This is not trauma treatment or clinical therapy. If trauma signals interfere with safety, please contact crisis support services.",
+  "solutions": [
     {
-      "id": "ptsd-ground-01",
-      "title": "Trauma-Informed Grounding: Hold & Name",
-      "durationMinutes": 5,
+      "id": "ptsd-sol-1",
+      "title": "5-4-3-2-1 Grounding",
+      "purpose": "Help redirect attention to present sensory information.",
       "type": "grounding",
+      "durationSeconds": 300,
       "instructions": [
-        "Find a safe, seated position with both feet flat on the floor",
-        "Pick up a small object near you (pen, stone, keys, fabric)",
-        "Hold it in both hands and notice every detail: texture, temperature, weight, edges",
-        "Say 3 things you notice about it out loud or in your head",
-        "Name the room you are in and 3 objects you can see",
-        "Tell yourself silently: I am here. I am safe now. This moment is not then.",
-        "Take 4 slow breaths: in for 5, out for 7"
+        "Focus on the immediate room around you.",
+        "Locate 5 objects you can see clearly.",
+        "Touch 4 items and notice their physical temperature and texture.",
+        "Identify 3 distinct ambient sounds.",
+        "Notice 2 scents or tastes.",
+        "Take a slow grounding breath."
       ]
     },
     {
-      "id": "ptsd-window-01",
-      "title": "Window of Tolerance Reset",
-      "durationMinutes": 6,
-      "type": "regulation",
+      "id": "ptsd-sol-2",
+      "title": "Controlled Breathing",
+      "purpose": "Provide a slow breathing/reset activity.",
+      "type": "breathing",
+      "durationSeconds": 300,
+      "recommendedSoundId": "rain",
       "instructions": [
-        "Notice whether you feel hypo-aroused (numb, frozen) or hyper-aroused (panicked, agitated)",
-        "For hyper-arousal: place one hand on chest, one on belly, breathe only into the belly hand for 10 breaths",
-        "For hypo-arousal: stand up, stamp feet gently 10 times, rub arms firmly, splash cold water on face",
-        "After either sequence, say your name, today's date, and your location out loud",
-        "Find one thing in the room that gives you even a tiny sense of safety and focus on it for 30 seconds"
+        "Place your hand on your abdomen.",
+        "Inhale slowly for 4 seconds feeling your hand rise.",
+        "Exhale smoothly for 6 seconds feeling your hand fall.",
+        "Keep your focus centered on the hand movement."
       ]
     },
     {
-      "id": "ptsd-contain-01",
-      "title": "Container Exercise",
-      "durationMinutes": 8,
-      "type": "imagery",
+      "id": "ptsd-sol-3",
+      "title": "Present-Moment Orientation",
+      "purpose": "Help the user focus on the current environment and immediate present context.",
+      "type": "reflection",
+      "durationSeconds": 180,
       "instructions": [
-        "Imagine a container — a box, safe, chest, vault — whatever feels right to you",
-        "Picture it in detail: material, locks, size, color",
-        "Take intrusive images, thoughts, or memories and mentally place them one by one inside the container",
-        "Close and lock the container securely",
-        "Imagine placing the container somewhere outside of you — another room, underground, wherever feels safest",
-        "Tell yourself: I can choose to open this when I am ready and with support. Right now, these are stored safely away.",
-        "Bring attention back to your breath and your body in the present"
+        "Say aloud or mentally: 'Today is [Current Date]. I am in [Location].'",
+        "Look at your hands and feel your feet flat on the floor.",
+        "Remind yourself: 'Right now, in this exact moment, I am safe here.'"
+      ]
+    },
+    {
+      "id": "ptsd-sol-4",
+      "title": "Progressive Muscle Relaxation",
+      "purpose": "Guide gradual relaxation of muscle groups.",
+      "type": "relaxation",
+      "durationSeconds": 600,
+      "instructions": [
+        "Start with your hands: tighten fists for 5 seconds, then release for 10.",
+        "Shrug shoulders high toward your ears for 5 seconds, then let them drop completely.",
+        "Tighten stomach muscles for 5 seconds, then release completely.",
+        "Press heels firm into floor for 5 seconds, then relax feet."
+      ]
+    },
+    {
+      "id": "ptsd-sol-5",
+      "title": "Safe-Place Visualization",
+      "purpose": "Provide a calm visualization activity centered around a personally comfortable/safe environment.",
+      "type": "meditation",
+      "durationSeconds": 300,
+      "recommendedSoundId": "ocean",
+      "instructions": [
+        "Picture a quiet, peaceful place where you feel completely secure.",
+        "Notice the colors, lighting, temperature, and gentle sounds of this safe space.",
+        "Breathe deeply as you allow your body to relax in this environment.",
+        "Know that you can return to this mental sanctuary whenever needed."
       ]
     }
-  ],
-  "tools": [
-    {
-      "id": "tool-ptsd-grounding",
-      "name": "Multi-Sensory Grounding Deck",
-      "description": "Interactive cards with trauma-informed grounding exercises for hyper and hypo-arousal states.",
-      "type": "grounding-deck"
-    },
-    {
-      "id": "tool-ptsd-trigger",
-      "name": "Trigger Log & Safety Plan",
-      "description": "Private log to identify triggers, warning signs, and build a personalised safety plan.",
-      "type": "safety-plan"
-    },
-    {
-      "id": "tool-ptsd-window",
-      "name": "Window of Tolerance Tracker",
-      "description": "Visual tool to track your arousal states and build awareness of your regulation patterns.",
-      "type": "arousal-tracker"
-    },
-    {
-      "id": "tool-ptsd-resources",
-      "name": "Trauma-Informed Resource Library",
-      "description": "Curated collection of books, articles, and audio from trusted trauma therapy experts.",
-      "type": "resource-library"
-    },
-    {
-      "id": "tool-ptsd-container",
-      "name": "Container Journal",
-      "description": "Digital container to securely store difficult memories with optional access controls.",
-      "type": "containment-tool"
-    }
-  ],
-  "recommendedSoundIds": ["ocean", "fireplace", "singing-bowl"],
-  "timerConfig": {
-    "defaultDurationMinutes": 6,
-    "options": [5, 6, 10, 15]
-  },
-  "safetyGuidance": "PTSD is a treatable condition and you are not broken; your nervous system learned to protect you and now needs help feeling safe again. Evidence-based therapies like EMDR, CBT, and somatic therapies can be deeply effective. If you are experiencing PTSD symptoms, please consider working with a trauma-specialised mental health professional. If you ever feel unsafe, contact your local crisis line or emergency services immediately. Recovery is possible and you deserve skilled support on your journey."
+  ]
 }

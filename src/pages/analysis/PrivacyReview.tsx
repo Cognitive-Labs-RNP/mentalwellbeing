@@ -1,19 +1,53 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Send, ShieldCheck, Eye } from 'lucide-react';
+import { ArrowLeft, Send, ShieldCheck, Eye, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { PrivacyReviewPanel, StructuredSummary } from '@/components/ui/PrivacyReviewPanel';
-
-const MOCK_SUMMARY: StructuredSummary = {
-  mood: 5,
-  stress: 6,
-  energy: 4,
-  contextTags: ['work', 'sleep', 'relationships'],
-  sanitisedDescription:
-    "Feeling somewhat tense and moderately low energy today. Experiencing difficulty with focus at [REDACTED] and restless [REDACTED].",
-};
+import { useAppStore } from '@/store';
+import { filterPii } from '@/services/privacyFilter';
+import { extractStructuredData } from '@/services/localExtractor';
 
 export default function AnalysisPrivacyReview() {
   const navigate = useNavigate();
+  const currentAnalysisInput = useAppStore((s) => s.currentAnalysisInput);
+
+  // Compute real privacy filter & extraction from the active user input
+  const privacyResult = useMemo(() => {
+    if (!currentAnalysisInput.trim()) return null;
+    const filter = filterPii(currentAnalysisInput);
+    const extraction = extractStructuredData(filter.sanitisedText, filter.detectedCategories);
+
+    // Derive numerical scores from severity and symptoms for the PrivacyReviewPanel display
+    const moodScore = extraction.severity === 'severe' ? 2 : extraction.severity === 'high' ? 3 : extraction.severity === 'moderate' ? 5 : 7;
+    const stressScore = extraction.severity === 'severe' ? 9 : extraction.severity === 'high' ? 8 : extraction.severity === 'moderate' ? 6 : 4;
+    const energyScore = (extraction.symptoms.includes('fatigue') || extraction.symptoms.includes('low energy')) ? 3 : 6;
+
+    const contextTags = Array.from(new Set([...extraction.trigger, ...extraction.impact]));
+
+    const summary: StructuredSummary = {
+      mood: moodScore,
+      stress: stressScore,
+      energy: energyScore,
+      contextTags,
+      sanitisedDescription: filter.sanitisedText,
+    };
+
+    return { filter, extraction, summary };
+  }, [currentAnalysisInput]);
+
+  if (!currentAnalysisInput.trim() || !privacyResult) {
+    return (
+      <div className="p-8 text-center space-y-4 bg-surface/80 rounded-2xl border border-surface-border">
+        <AlertCircle className="w-10 h-10 text-accent-amber mx-auto" />
+        <h3 className="text-lg font-bold text-text-primary">No Check-in Text Provided</h3>
+        <p className="text-sm text-text-secondary">Please enter your check-in text first before reviewing privacy settings.</p>
+        <Button variant="primary" size="md" onClick={() => navigate('/analysis/input')}>
+          <ArrowLeft className="w-4 h-4" />
+          Go to Input
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-slide-up">
@@ -48,7 +82,7 @@ export default function AnalysisPrivacyReview() {
       </div>
 
       <PrivacyReviewPanel
-        structuredSummary={MOCK_SUMMARY}
+        structuredSummary={privacyResult.summary}
         onCancel={() => navigate('/analysis/input')}
         onConfirm={() => navigate('/analysis/loading')}
       />
@@ -60,7 +94,7 @@ export default function AnalysisPrivacyReview() {
           onClick={() => navigate('/analysis/input')}
           className="min-w-[140px]"
         >
-          <ArrowLeft className="w-4.5 h-4.5" />
+          <ArrowLeft className="w-4 h-4" />
           Back to edit
         </Button>
 

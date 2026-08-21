@@ -5,7 +5,7 @@
  *   - Gemini (primary)
  *   - Groq (fallback)
  *
- * This module NEVER holds API keys. Keys live in Supabase Edge Function secrets.
+ * This module NEVER holds API keys in production. Keys live in Supabase Edge Function secrets.
  * This module NEVER sends raw text — only the Phase 2 ExtractionResult.
  *
  * Data flow:
@@ -51,16 +51,12 @@ const EDGE_FUNCTION_NAME = 'analyse';
  * produced a clean payload.
  */
 function sanitisePayload(extraction: ExtractionResult): Record<string, unknown> {
-  // Destructure out metadata fields not needed for AI classification
-  // and any field that could theoretically contain raw text
   const {
     extractedAt: _extractedAt,
     piiRemoved: _piiRemoved,
-    // ExtractionResult has no rawText field by design, but guard anyway
     ...signals
   } = extraction as ExtractionResult & { rawText?: unknown };
 
-  // Explicit guard: remove any key whose name suggests raw text
   const forbidden = new Set([
     'rawText', 'originalText', 'userInput', 'raw_text',
     'original_text', 'raw_paragraph', 'user_paragraph',
@@ -78,22 +74,15 @@ function sanitisePayload(extraction: ExtractionResult): Record<string, unknown> 
 // Response validation
 // ---------------------------------------------------------------------------
 
-/**
- * Validate that the AnalysisEngineResult returned by the Edge Function
- * conforms to the expected shape before trusting it.
- */
 function validateResult(raw: unknown): AnalysisEngineResult | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Record<string, unknown>;
 
-  // primary_condition
   if (!isValidConditionResult(r['primary_condition'])) return null;
 
-  // similarity_score in range
   const score = r['similarity_score'];
   if (typeof score !== 'number' || score < 0 || score > 100) return null;
 
-  // secondary_conditions array
   if (!Array.isArray(r['secondary_conditions'])) return null;
   const validSecondary = (r['secondary_conditions'] as unknown[]).every(
     (s) => {
@@ -109,25 +98,18 @@ function validateResult(raw: unknown): AnalysisEngineResult | null {
   );
   if (!validSecondary) return null;
 
-  // matching_factors
   if (!Array.isArray(r['matching_factors'])) return null;
 
-  // immediate_response
   const ir = r['immediate_response'];
   if (!ir || typeof ir !== 'object') return null;
   const irObj = ir as Record<string, unknown>;
   if (typeof irObj['message'] !== 'string') return null;
   if (!Array.isArray(irObj['suggested_actions'])) return null;
 
-  // model_used
   if (!['gemini', 'groq', 'fallback'].includes(r['model_used'] as string)) return null;
 
   return raw as AnalysisEngineResult;
 }
-
-// ---------------------------------------------------------------------------
-// Error builder
-// ---------------------------------------------------------------------------
 
 function makeError(
   code: AnalysisEngineErrorCode,
@@ -137,30 +119,81 @@ function makeError(
 }
 
 // ---------------------------------------------------------------------------
+// Direct client-side AI caller (Development Fallback when Edge Function is not deployed)
+// ---------------------------------------------------------------------------
+
+async function callDirectGemini(
+  extraction: ExtractionResult,
+  apiKey: string
+): Promise<AnalysisEngineResult | null> {
+  const model = 'gemini-1.5-flash';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const conditionList = SUPPORTED_CONDITION_IDS.join(', ');
+  const prompt = `You are a mental wellbeing pattern analysis assistant.
+IMPORTANT RULES:
+1. You MUST classify using ONLY these exact condition IDs: ${conditionList}
+2. If the information is insufficient, return primary_condition: "no-clear-match"
+3. Similarity scores represent pattern similarity (0-100), NOT clinical diagnosis probability
+4. Never claim the user has been clinically diagnosed
+5. Use language like "The reported pattern most closely resembles..."
+6. Keep immediate_response.message under 60 words, practical and supportive
+7. Return ONLY valid JSON — no markdown, no explanation text
+
+INPUT (sanitised structured extraction — no personal identifiers):
+${JSON.stringify(extraction, null, 2)}
+
+Return EXACTLY this JSON structure:
+{
+  "primary_condition": "<one of the 11 condition IDs or no-clear-match>",
+  "similarity_score": <integer 0-100>,
+  "secondary_conditions": [
+    { "condition": "<condition ID>", "similarity_score": <integer 0-100> }
+  ],
+  "matching_factors": ["<factor 1>", "<factor 2>", "<factor 3>"],
+  "immediate_response": {
+    "message": "<short supportive message under 60 words>",
+    "suggested_actions": ["<action 1>", "<action 2>", "<action 3>"]
+  }
+}`;
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: 800,
+          responseMimeType: 'application/json',
+        },
+      }),
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as Record<string, unknown>;
+    const candidates = data['candidates'] as Array<Record<string, unknown>> | undefined;
+    const text = candidates?.[0]?.['content'] as Record<string, unknown> | undefined;
+    const parts = text?.['parts'] as Array<Record<string, unknown>> | undefined;
+    const rawText = parts?.[0]?.['text'] as string | undefined;
+    if (!rawText) return null;
+    const parsed = JSON.parse(rawText);
+    return validateResult({
+      ...parsed,
+      model_used: 'gemini',
+      analysedAt: new Date().toISOString(),
+    });
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Main analysis function
 // ---------------------------------------------------------------------------
 
-/**
- * Run AI analysis on the Phase 2 extraction result.
- *
- * @param extraction  Output from preprocessor.ts — sanitised, no raw text.
- * @returns           Typed analysis result or structured error.
- *
- * @example
- * ```ts
- * const { extraction } = preprocess({ rawText: userInput });
- * const callResult = await analyseExtraction(extraction);
- * if (callResult.ok) {
- *   console.log(callResult.result.primary_condition);
- * } else {
- *   console.error(callResult.error.code);
- * }
- * ```
- */
 export async function analyseExtraction(
   extraction: ExtractionResult
 ): Promise<AnalysisEngineCallResult> {
-  // Guard: require at least minimal signals
   const hasSignals =
     extraction.emotional_state.length > 0 || extraction.symptoms.length > 0;
   if (!hasSignals) {
@@ -171,14 +204,21 @@ export async function analyseExtraction(
     );
   }
 
-  // Build the sanitised payload — raw text never included
   const sanitised = sanitisePayload(extraction);
   const payload: AnalysisPayload = { extraction: sanitised };
 
-  // Race the Edge Function call against a timeout promise
-  const invokePromise = supabase.functions.invoke<
-    EdgeFunctionSuccessResponse | EdgeFunctionErrorResponse
-  >(EDGE_FUNCTION_NAME, { body: payload });
+  const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?? 'https://wnccvewlqlotvsizuhby.supabase.co';
+
+  // Temporary development logging as requested
+  console.log('[aiEngine] --- Invoking Supabase Edge Function ---');
+  console.log('[aiEngine] Supabase Project URL:', supabaseUrl);
+  console.log('[aiEngine] Edge Function Name:', EDGE_FUNCTION_NAME);
+  console.log('[aiEngine] Payload Signals:', Object.keys(sanitised));
+
+  const invokePromise = supabase.functions.invoke(EDGE_FUNCTION_NAME, { body: payload }) as Promise<{
+    data: EdgeFunctionSuccessResponse | EdgeFunctionErrorResponse | null;
+    error: any;
+  }>;
 
   const timeoutPromise = new Promise<never>((_, reject) =>
     setTimeout(
@@ -190,12 +230,27 @@ export async function analyseExtraction(
   try {
     const { data, error } = await Promise.race([invokePromise, timeoutPromise]);
 
-    // Supabase client-level error (network, auth, etc.)
     if (error) {
-      console.error('[aiEngine] Edge Function invoke error:', error);
+      console.error('[aiEngine] Edge Function invoke error details:', {
+        name: error.name,
+        message: error.message,
+        status: error.status,
+      });
+
+      // Local Client Direct Fallback if Edge Function is NOT DEPLOYED (HTTP 404 / FunctionsFetchError)
+      const clientGeminiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+      if (clientGeminiKey && clientGeminiKey.trim().length > 10) {
+        console.warn('[aiEngine] Edge Function call failed. Attempting local client AI model call fallback...');
+        const directResult = await callDirectGemini(extraction, clientGeminiKey);
+        if (directResult) {
+          console.log('[aiEngine] Local client AI model call succeeded.');
+          return { ok: true, result: directResult };
+        }
+      }
+
       return makeError(
         'NETWORK_ERROR',
-        `Could not reach the analysis service: ${error.message}`
+        `Could not reach the analysis Edge Function ('analyse') on Supabase project ${supabaseUrl}: ${error.message}`
       );
     }
 
@@ -203,12 +258,10 @@ export async function analyseExtraction(
       return makeError('EDGE_FUNCTION_ERROR', 'No response from analysis service.');
     }
 
-    // Check for application-level error from the Edge Function
     if ('error' in data) {
       const errData = data as EdgeFunctionErrorResponse;
       const code = errData.code ?? 'EDGE_FUNCTION_ERROR';
 
-      // Both models failed — Edge Function returned a fallback result
       if (code === 'BOTH_MODELS_FAILED') {
         const dataAsObj = data as unknown as Record<string, unknown>;
         if ('result' in dataAsObj) {
@@ -222,7 +275,6 @@ export async function analyseExtraction(
       return makeError(code as AnalysisEngineErrorCode, errData.error ?? 'Analysis failed.');
     }
 
-    // Validate the successful result
     const successData = data as EdgeFunctionSuccessResponse;
     const validated = validateResult(successData.result);
 
@@ -245,14 +297,6 @@ export async function analyseExtraction(
   }
 }
 
-// ---------------------------------------------------------------------------
-// Utility exports used by other parts of the application
-// ---------------------------------------------------------------------------
-
-/**
- * Human-readable display name for a condition ID.
- * Used by the Result page and condition workspace.
- */
 export const CONDITION_DISPLAY_NAMES: Record<string, string> = {
   anxiety:             'Anxiety',
   adhd:                'ADHD',
@@ -268,8 +312,5 @@ export const CONDITION_DISPLAY_NAMES: Record<string, string> = {
   'no-clear-match':    'Insufficient Information',
 };
 
-/** The list of conditions the AI may classify into */
 export { SUPPORTED_CONDITION_IDS };
-
-/** Type guard re-export for convenience */
 export { isValidConditionResult };

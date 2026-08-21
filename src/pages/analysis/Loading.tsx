@@ -1,51 +1,118 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Loader2, Sparkles, Waves } from 'lucide-react';
-import { Card } from '@/components/ui/Card';
+import { Brain, Loader2, Sparkles, Waves, AlertTriangle, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/Card';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Button } from '@/components/ui/Button';
+import { useAppStore } from '@/store';
 
 const LOADING_MESSAGES = [
-  'Reading your summary...',
-  'Matching patterns...',
-  'Finding the right support steps...',
-  'Almost ready...',
+  'Applying privacy filter & sanitising text...',
+  'Extracting mental health signals...',
+  'Connecting to AI Engine...',
+  'Matching behavioral patterns...',
+  'Preparing your custom workspace...',
 ];
 
 export default function AnalysisLoading() {
   const navigate = useNavigate();
+  const currentAnalysisInput = useAppStore((s) => s.currentAnalysisInput);
+  const isAnalysing = useAppStore((s) => s.isAnalysing);
+  const analysisError = useAppStore((s) => s.analysisError);
+  const currentAnalysisResult = useAppStore((s) => s.currentAnalysisResult);
+  const runAnalysisPipeline = useAppStore((s) => s.runAnalysisPipeline);
+
   const [messageIdx, setMessageIdx] = useState(0);
-  const [progress, setProgress] = useState(10);
-  const startedRef = useRef(false);
+  const [progress, setProgress] = useState(15);
+  const executedRef = useRef(false);
 
+  // Execute real AI analysis pipeline when component mounts
   useEffect(() => {
-    if (startedRef.current) return;
-    startedRef.current = true;
+    if (executedRef.current) return;
+    executedRef.current = true;
 
+    if (!currentAnalysisInput.trim()) {
+      navigate('/analysis/input');
+      return;
+    }
+
+    const run = async () => {
+      const success = await runAnalysisPipeline();
+      if (success) {
+        setProgress(100);
+        setTimeout(() => navigate('/analysis/result'), 400);
+      }
+    };
+
+    run();
+  }, [currentAnalysisInput, runAnalysisPipeline, navigate]);
+
+  // Loading message animation ticks
+  useEffect(() => {
+    if (!isAnalysing) return;
     const msgInterval = setInterval(() => {
       setMessageIdx((prev) => Math.min(prev + 1, LOADING_MESSAGES.length - 1));
-    }, 1500);
+    }, 1800);
 
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        const next = prev + Math.random() * 12 + 3;
-        return Math.min(next, 97);
-      });
-    }, 280);
-
-    const navigateTimer = setTimeout(() => {
-      setProgress(100);
-      setTimeout(() => navigate('/analysis/result'), 350);
-    }, 3500);
+      setProgress((prev) => Math.min(prev + Math.random() * 10 + 4, 95));
+    }, 350);
 
     return () => {
       clearInterval(msgInterval);
       clearInterval(progressInterval);
-      clearTimeout(navigateTimer);
     };
-  }, [navigate]);
+  }, [isAnalysing]);
 
-  const currentMessage = LOADING_MESSAGES[messageIdx];
+  const handleRetry = async () => {
+    executedRef.current = false;
+    setProgress(15);
+    setMessageIdx(0);
+    const success = await runAnalysisPipeline();
+    if (success) {
+      setProgress(100);
+      setTimeout(() => navigate('/analysis/result'), 400);
+    }
+  };
 
+  // ERROR STATE: Show error message if API or analysis fails (never leave spinner spinning)
+  if (analysisError && !isAnalysing) {
+    return (
+      <div className="min-h-[480px] flex items-center justify-center py-6 animate-fade-in">
+        <Card className="w-full max-w-lg border-accent-amber/30 bg-surface/90 shadow-glass">
+          <CardContent className="p-8 space-y-6 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-accent-rose/15 border border-accent-rose/30 flex items-center justify-center mx-auto text-accent-rose">
+              <AlertTriangle className="w-7 h-7" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-display text-xl font-bold text-text-primary">Analysis Request Failed</h3>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {analysisError.message || 'An error occurred while contacting the AI service.'}
+              </p>
+              <div className="inline-block mt-2 px-3 py-1 rounded-lg bg-surface-hover border border-surface-border text-xs font-mono text-text-muted">
+                Error Code: {analysisError.code}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <Button variant="ghost" size="md" onClick={() => navigate('/analysis/input')}>
+                <ArrowLeft className="w-4 h-4" />
+                Edit Check-in Text
+              </Button>
+
+              <Button variant="primary" size="md" onClick={handleRetry}>
+                <RefreshCw className="w-4 h-4" />
+                Try Again
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // LOADING STATE
   return (
     <div className="min-h-[520px] flex items-center justify-center py-6 animate-fade-in">
       <Card className="w-full max-w-md mx-auto shadow-[0_0_60px_rgba(167,139,250,0.12)]">
@@ -77,7 +144,7 @@ export default function AnalysisLoading() {
                 Analysing your check-in
               </h3>
               <p className="text-sm md:text-base text-text-secondary leading-relaxed">
-                Running pattern detection locally where possible. Your data remains private.
+                Processing sanitized extraction with real AI model...
               </p>
             </div>
 
@@ -93,7 +160,7 @@ export default function AnalysisLoading() {
                 <Waves className="w-5 h-5 md:w-5.5 md:h-5.5 text-accent-lavender flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm md:text-base font-medium text-text-primary text-left truncate transition-all duration-300">
-                    {currentMessage}
+                    {LOADING_MESSAGES[messageIdx]}
                   </p>
                 </div>
                 <div className="flex items-end gap-1 h-5 flex-shrink-0">
@@ -113,10 +180,10 @@ export default function AnalysisLoading() {
               <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent-lavender/10 text-accent-lavender text-xs font-semibold border border-accent-lavender/20">
                   <Sparkles className="w-3.5 h-3.5" />
-                  Pattern engine
+                  Real AI Model
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent-cyan/10 text-accent-cyan text-xs font-semibold border border-accent-cyan/20">
-                  Privacy-first
+                  Privacy-filtered
                 </span>
               </div>
             </div>

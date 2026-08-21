@@ -1,162 +1,77 @@
 {
   "conditionId": "anger-irritation",
   "name": "Anger & Irritation",
-  "description": "Recurrent patterns of anger outbursts, persistent irritability, or difficulty managing frustration that feels out of proportion to situations, affecting relationships and daily functioning.",
-  "immediateActions": [
+  "description": "Pattern related to sudden frustration, emotional reactivity, or heightened physical tension.",
+  "taskBreakerEnabled": false,
+  "recommendedSoundIds": ["rain", "ocean", "ambient"],
+  "safetyGuidance": "This is not a clinical diagnosis. Informational pattern match based on reported frustration and tension.",
+  "solutions": [
     {
-      "id": "ang-cool-01",
-      "title": "60-Second Cool Down",
-      "durationMinutes": 2,
-      "type": "calming",
+      "id": "ang-sol-1",
+      "title": "Anger Breathing",
+      "purpose": "Create a short pause and breathing reset before reacting.",
+      "type": "breathing",
+      "durationSeconds": 300,
+      "recommendedSoundId": "rain",
       "instructions": [
-        "As soon as you notice anger rising, say silently to yourself: I am feeling angry and I have space to choose my response",
-        "Step back physically if possible: take one step away or turn slightly",
-        "Take a fast, deep inhale through the nose for 2 counts, then exhale slowly through pursed lips for 6 counts",
-        "Repeat the breath pattern 3 more times",
-        "Ask yourself: On a scale of 1-10, how hot is my anger right now? Name it aloud if safe",
-        "Ask: What do I actually need right now? Space? A drink? To say nothing for 2 minutes?"
+        "Inhale deeply through your nose for 4 counts.",
+        "Exhale forcefully through pursed lips for 6 counts.",
+        "Visualize blowing out heat and pressure with each long exhale.",
+        "Repeat until your heart rate slows down."
       ]
     },
     {
-      "id": "ang-timeout-01",
-      "title": "90-Second Timeout Protocol",
-      "durationMinutes": 3,
-      "type": "timeout",
+      "id": "ang-sol-2",
+      "title": "Pause-and-Reset",
+      "purpose": "Provide a short structured pause before responding to a triggering situation.",
+      "type": "urge-delay",
+      "durationSeconds": 120,
       "instructions": [
-        "As soon as you feel irritation rising, say silently: I need 90 seconds",
-        "If in a conversation, say gently: I need a moment, I will come back in 2 minutes",
-        "Physically remove yourself to a quiet space if possible",
-        "Splash cold water on your face or hold a cold object",
-        "Breathe in for 4 counts, hold 4, exhale 6 — repeat 5 times",
-        "Ask yourself: What am I really feeling underneath? Hurt? Fear? Disrespected? Tired?",
-        "Wait until you can name the secondary feeling before returning"
+        "Step physically back from the immediate situation.",
+        "Do not send messages, speak, or react while the timer runs.",
+        "Breathe deeply and count backward from 60.",
+        "Ask yourself: 'Will reacting right now help or hurt my long-term peace?'"
       ]
     },
     {
-      "id": "ang-release-01",
-      "title": "Physical Release Sequence",
-      "durationMinutes": 5,
-      "type": "physical-release",
+      "id": "ang-sol-3",
+      "title": "Progressive Muscle Relaxation",
+      "purpose": "Help release physical tension.",
+      "type": "relaxation",
+      "durationSeconds": 600,
       "instructions": [
-        "Go somewhere private if possible",
-        "Clench your fists as tightly as you can for 5 full seconds, then release completely and shake out your hands",
-        "Tense all the muscles in your face, hold for 5, then release and sigh out loud",
-        "Push both hands against a wall as hard as you safely can for 5 seconds, then release",
-        "March or jog in place vigorously for 30 seconds, then stop and stand still",
-        "Take 3 slow breaths in and out and notice the shift in energy"
+        "Clench your jaw tight for 5 seconds, then unclench completely.",
+        "Squeeze your fists tight for 5 seconds, then open palms wide.",
+        "Tense your abdomen tight, then let it loosen.",
+        "Notice the cooling sensation as muscle tightness melts away."
       ]
     },
     {
-      "id": "ang-heatmap-01",
-      "title": "Heat Mapping: Body Scan for Anger",
-      "durationMinutes": 5,
-      "type": "body-scan",
+      "id": "ang-sol-4",
+      "title": "Mind-Clearing Exercise",
+      "purpose": "Provide a short period to step away mentally from the immediate irritation.",
+      "type": "mind-clearing",
+      "durationSeconds": 300,
+      "recommendedSoundId": "ocean",
       "instructions": [
-        "Close your eyes and mentally scan your body from head to toe",
-        "Notice where the anger lives: tight jaw? Clenched fists? Tight chest? Hot face?",
-        "Rate the heat/intensity from 1 to 10 in each body area",
-        "For the hottest area, breathe INTO it for 3 breaths: imagine cool air flowing in, tension melting out",
-        "Clench and release each tight muscle group on each exhale",
-        "After releasing, re-rate the intensity and notice the difference"
+        "Sit in a cool, quiet spot.",
+        "Close your eyes and focus on a neutral mental image (cold water, falling snow).",
+        "Let hot thoughts pass without holding onto them.",
+        "Remain quiet until the session finishes."
       ]
     },
     {
-      "id": "ang-label-01",
-      "title": "Anger Unpacking: What Is Underneath?",
-      "durationMinutes": 7,
-      "type": "thought",
+      "id": "ang-sol-5",
+      "title": "Guided Meditation",
+      "purpose": "Provide a short calming mindfulness activity.",
+      "type": "meditation",
+      "durationSeconds": 300,
+      "recommendedSoundId": "ambient",
       "instructions": [
-        "Write the event that triggered your anger in one or two sentences",
-        "Rate the anger from 1 to 10",
-        "Ask: Under the anger, am I also feeling hurt? Unheard? Disappointed? Afraid? Overwhelmed? Disrespected?",
-        "Circle any secondary feelings that are also present",
-        "Ask: What is it that I wanted or needed in this situation that I did not get?",
-        "Write down one thing you want to say or do next, and one thing you want to avoid saying or doing"
-      ]
-    },
-    {
-      "id": "ang-reframe-01",
-      "title": "Perspective Shift: 3 Angles",
-      "durationMinutes": 7,
-      "type": "cognitive",
-      "instructions": [
-        "Write the triggering event in 1 sentence",
-        "Angle 1 — My view: Write your perspective, your feelings, your assumptions",
-        "Angle 2 — Their view: Write what might the other person (or situation) be experiencing? Be generous in imagining",
-        "Angle 3 — Observer view: What would a neutral, wise friend say about this?",
-        "After writing all 3, ask: Is my original interpretation the only possible one?",
-        "Choose one response that would move things forward productively"
-      ]
-    },
-    {
-      "id": "ang-communicate-01",
-      "title": "Constructive Expression Prompt",
-      "durationMinutes": 6,
-      "type": "communication",
-      "instructions": [
-        "Decide what the actual issue is, separate from the person involved",
-        "Write one sentence using the I-statement format: I feel [emotion] when [specific situation/action] because [effect on you]",
-        "Write down one specific request of what you would like instead, framed positively",
-        "Choose a good time to speak: not when either of you is hungry, tired, or still heated",
-        "Deliver your I-statement calmly and state your request clearly",
-        "Listen to the response without interrupting; you do not have to agree, just to hear"
+        "Acknowledge anger as an energetic warning signal, not an absolute command.",
+        "Breathe calmly into your chest and belly.",
+        "Choose composure over conflict for your own peace of mind."
       ]
     }
-  ],
-  "tools": [
-    {
-      "id": "tool-ang-pause",
-      "name": "Pause Button Prompt",
-      "description": "Discreet full-screen pause reminder with breathing animation for escalating moments.",
-      "type": "coping-alert"
-    },
-    {
-      "id": "tool-ang-log",
-      "name": "Anger & Trigger Pattern Log",
-      "description": "Track anger episodes: trigger, body cues, thoughts, intensity, and outcome to spot your early warning signs and patterns over time.",
-      "type": "pattern-log"
-    },
-    {
-      "id": "tool-ang-coolcard",
-      "name": "Cool-Down Card Deck",
-      "description": "Quick-reference cards with 20+ rapid cooling strategies for different contexts (work, home, public).",
-      "type": "cooling-cards"
-    },
-    {
-      "id": "tool-ang-release",
-      "name": "Energy Release Guide",
-      "description": "Menu of safe physical outlets matched to how much energy and privacy you have.",
-      "type": "release-menu"
-    },
-    {
-      "id": "tool-ang-scripts",
-      "name": "I-Statement Builder",
-      "description": "Step-by-step builder to draft calm, clear I-statements and requests for difficult conversations.",
-      "type": "communication-tool"
-    },
-    {
-      "id": "tool-ang-conflict",
-      "name": "Conflict Resolution Builder",
-      "description": "Step-by-step framework for having difficult conversations without escalation.",
-      "type": "conflict-tool"
-    },
-    {
-      "id": "tool-ang-stimulants",
-      "name": "Baseline Audit Tool",
-      "description": "Track sleep, hunger, caffeine, and sleep quality — factors that lower your frustration threshold.",
-      "type": "baseline-tracker"
-    },
-    {
-      "id": "tool-ang-guided",
-      "name": "Forgiveness & Release Audio",
-      "description": "Guided audio exercises to release resentment and process unresolved anger gently over time.",
-      "type": "release-audio"
-    }
-  ],
-  "recommendedSoundIds": ["ocean", "rain", "forest", "wind"],
-  "timerConfig": {
-    "defaultDurationMinutes": 5,
-    "options": [2, 5, 7, 10]
-  },
-  "safetyGuidance": "Anger is a natural human emotion that signals something matters to us — the goal is not to eliminate it, but to express it in ways that do not harm yourself or others. Anger issues are treatable and often stem from unmet needs, past experiences, or current stressors. If anger is causing harm to yourself or your relationships, working with a therapist (especially one trained in CBT or DBT) can help you build lasting regulation skills. If you ever feel at risk of harming yourself or someone else, please reach out to emergency services or a crisis line immediately."
+  ]
 }
