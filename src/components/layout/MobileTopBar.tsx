@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X, Heart, LogOut } from 'lucide-react';
 import { NavbarDynamicTab } from './NavbarDynamicTab';
 import { UrgentHelpButton } from './UrgentHelpButton';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useAppStore } from '@/store';
+import { logout as supabaseLogout } from '@/services/auth';
 import {
   Home,
   Search,
@@ -60,6 +62,23 @@ export function MobileTopBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navLinks = getNavLinks();
+  const navigate = useNavigate();
+
+  const session = useAppStore((s) => s.session);
+  const clearSession = useAppStore((s) => s.clearSession);
+
+  const isGuest = session?.isDemo === true;
+  const userUid = session?.uid ?? 'Guest';
+
+  const handleAction = async () => {
+    setIsMenuOpen(false);
+    if (isGuest) {
+      clearSession();
+    } else {
+      await supabaseLogout();
+    }
+    navigate('/auth/login', { replace: true });
+  };
 
   return (
     <>
@@ -152,6 +171,45 @@ export function MobileTopBar() {
                 })}
               </ul>
             </nav>
+
+            {/* Session footer */}
+            <div className="mx-3 mb-3 rounded-xl border border-surface-border bg-surface/40 overflow-hidden">
+              <div className="flex items-center gap-2 px-3 py-2.5 border-b border-surface-border">
+                <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-surface to-surface-hover border border-surface-border flex items-center justify-center flex-shrink-0">
+                  <User className="h-3.5 w-3.5 text-text-secondary" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      aria-hidden="true"
+                      className={[
+                        'w-1.5 h-1.5 rounded-full flex-shrink-0',
+                        isGuest ? 'bg-accent-amber' : 'bg-accent-green',
+                      ].join(' ')}
+                    />
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                      {isGuest ? 'Guest Session' : 'Private Account'}
+                    </p>
+                  </div>
+                  <p className="text-xs font-mono font-bold text-text-secondary truncate">
+                    {userUid}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleAction}
+                className={[
+                  'w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all text-left',
+                  isGuest
+                    ? 'text-accent-amber hover:bg-accent-amber/10'
+                    : 'text-accent-rose hover:bg-accent-rose/10',
+                ].join(' ')}
+              >
+                <LogOut className="h-4 w-4 flex-shrink-0" />
+                <span>{isGuest ? 'Exit Guest Mode' : 'Log out'}</span>
+              </button>
+            </div>
 
             <div className="p-4 border-t border-surface-border">
               <UrgentHelpButton variant="sidebar" />

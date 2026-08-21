@@ -1,4 +1,4 @@
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home,
   Search,
@@ -10,8 +10,11 @@ import {
   Heart,
   Settings,
   Bell,
+  LogOut,
 } from 'lucide-react';
 import { useState } from 'react';
+import { useAppStore } from '@/store';
+import { logout as supabaseLogout } from '@/services/auth';
 
 const navLinks = [
   { id: 'home', to: '/', label: 'Home', icon: Home },
@@ -29,6 +32,27 @@ function isActiveLink(to: string, pathname: string): boolean {
 export function Navbar() {
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
+
+  const session = useAppStore((s) => s.session);
+  const clearSession = useAppStore((s) => s.clearSession);
+  const navigate = useNavigate();
+
+  // isDemo is the only authoritative guest flag.
+  // The legacy `account` field is not used here because it can be non-null
+  // for real users who signed up before the Supabase migration.
+  const isGuest = session?.isDemo === true;
+  const userUid = session?.uid ?? 'Guest';
+
+  const handleAction = async () => {
+    setProfileOpen(false);
+    if (isGuest) {
+      clearSession();
+    } else {
+      await supabaseLogout();
+    }
+    // Explicit redirect — defensive in case ProtectedRoute re-render is delayed.
+    navigate('/auth/login', { replace: true });
+  };
 
   return (
     <header className="sticky top-0 z-30 w-full backdrop-blur-xl bg-bg-primary/80 border-b border-surface-border">
@@ -104,11 +128,20 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setProfileOpen(!profileOpen)}
-              aria-label="Profile menu"
+              aria-label={isGuest ? 'Profile menu — guest session active' : 'Profile menu'}
               aria-expanded={profileOpen}
-              className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-surface to-surface-hover border border-surface-border hover:border-accent-lavender/30 transition-all overflow-hidden"
+              className="relative flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-surface to-surface-hover border border-surface-border hover:border-accent-lavender/30 transition-all overflow-hidden"
             >
               <User className="h-4.5 w-4.5 text-text-secondary" />
+              {/* Session-status indicator dot */}
+              <span
+                aria-hidden="true"
+                title={isGuest ? 'Guest session' : 'Logged in'}
+                className={[
+                  'absolute top-1.5 right-1.5 w-2 h-2 rounded-full border border-bg-primary',
+                  isGuest ? 'bg-accent-amber' : 'bg-accent-green',
+                ].join(' ')}
+              />
             </button>
 
             {profileOpen && (
@@ -118,6 +151,23 @@ export function Navbar() {
                   onClick={() => setProfileOpen(false)}
                 />
                 <div className="absolute right-0 top-12 z-50 w-56 glass rounded-2xl p-2 shadow-glow animate-slide-up">
+                  <div className="px-3 py-2 border-b border-surface-border mb-1">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span
+                        aria-hidden="true"
+                        className={[
+                          'w-1.5 h-1.5 rounded-full flex-shrink-0',
+                          isGuest ? 'bg-accent-amber' : 'bg-accent-green',
+                        ].join(' ')}
+                      />
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                        {isGuest ? 'Guest Session' : 'Private Account'}
+                      </p>
+                    </div>
+                    <p className="text-xs font-mono font-bold text-text-secondary truncate">
+                      {userUid}
+                    </p>
+                  </div>
                   <Link
                     to="/profile"
                     onClick={() => setProfileOpen(false)}
@@ -134,6 +184,15 @@ export function Navbar() {
                     <Settings className="h-4 w-4" />
                     <span>Tool Settings</span>
                   </Link>
+                  <div className="h-px bg-surface-border my-1" />
+                  <button
+                    type="button"
+                    onClick={handleAction}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-accent-rose hover:bg-accent-rose/10 transition-all text-left"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>{isGuest ? 'Exit Guest Mode' : 'Log out'}</span>
+                  </button>
                 </div>
               </>
             )}
