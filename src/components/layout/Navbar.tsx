@@ -107,15 +107,6 @@ export function Navbar() {
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-accent-rose" />
           </button>
 
-          <button
-            type="button"
-            aria-label="Quick analysis"
-            className="hidden sm:flex items-center gap-2 h-10 px-4 rounded-xl bg-gradient-to-r from-accent-lavender to-purple-500 text-white text-sm font-semibold hover:from-purple-500 hover:to-accent-lavender transition-all shadow-glow"
-          >
-            <Sparkles className="h-4 w-4" />
-            <span>Start Check-in</span>
-          </button>
-
           <Link
             to="/tool-settings"
             aria-label="Tool settings"
